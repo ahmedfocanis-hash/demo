@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
+/* Tailwind v4: enable class-based dark mode (equivalent of `darkMode: "class"`).
+   The `.dark` variant now matches an element that is itself `.dark` or a descendant
+   of `.dark`, so toggling `document.documentElement.classList` on `<html>` flips
+   every `dark:*` utility across the app. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #060b18;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
@@ -12,15 +23,58 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Thin scrollbars for the terminal/dark aesthetic */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Subtle pulse used for the system health pill */
+@keyframes softpulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.pulse-dot {
+  animation: softpulse 2s ease-in-out infinite;
+}
+
+/* Slide-in for drawers / modals */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease-out;
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-modal-pop {
+  animation: modalPop 0.22s ease-out;
 }

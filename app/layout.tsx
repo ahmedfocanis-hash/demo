@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import MetaMaskGuard from "@/components/MetaMaskGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,9 +22,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 dark:bg-[#060b18] dark:text-slate-100">
+        <MetaMaskGuard />
+        {children}
+      </body>
     </html>
   );
 }
