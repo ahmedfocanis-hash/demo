@@ -112,22 +112,22 @@ export default function Sidebar({
 }) {
   return (
     <>
-      <aside className="hidden md:flex md:w-72 md:flex-col md:shrink-0 border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+      <aside className="hidden md:flex md:w-72 md:flex-col md:shrink-0 border-r border-sand-wash bg-paper-white">
         <NavContent active={active} onSelect={onSelect} persona={persona} />
       </aside>
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
           <div
-            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink-roast/40 backdrop-blur-sm"
             onClick={onCloseMobile}
             aria-hidden
           />
-          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+          <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-sand-wash bg-paper-white">
             <button
               onClick={onCloseMobile}
               aria-label="Close menu"
-              className="absolute right-3 top-3 z-10 rounded-lg border-slate-300 bg-white p-1.5 text-slate-600 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+              className="absolute right-3 top-3 z-10 rounded-[8px] border border-sand-wash p-2 text-ash-grey hover:text-ink-roast"
             >
               <X className="h-5 w-5" />
             </button>
@@ -159,11 +159,11 @@ function NavContent({
 
   return (
     <>
-      <div className="flex-1 overflow-y-auto py-4">
-        <p className="px-4 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-600 ">
+      <div className="flex-1 overflow-y-auto py-6">
+        <p className="px-6 pb-3 text-[11px] font-medium uppercase tracking-[0.03em] text-ash-grey">
           Console
         </p>
-        <nav className="space-y-1 px-2">
+        <nav className="space-y-1 px-3">
           {visibleTabs.map((t) => {
             const Icon = t.icon;
             const isActive = t.id === active;
@@ -171,28 +171,35 @@ function NavContent({
               <button
                 key={t.id}
                 onClick={() => onSelect(t.id)}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all duration-150 hover:brightness-110 active:scale-[0.98] cursor-pointer ${
+                className={`relative flex w-full items-center gap-3 rounded-[12px] px-3 py-3 text-left transition-all duration-150 active:scale-[0.98] cursor-pointer ${
                   isActive
-                    ? "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:text-emerald-300"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-200"
+                    ? "bg-[rgba(247,59,32,0.05)] text-signal-orange"
+                    : "text-ink-roast/70 hover:bg-sand-wash/50 hover:text-ink-roast"
                 }`}
               >
-                <Icon className="h-4.5 w-4.5 shrink-0" />
-                <span className="flex-1">
-                  <span className="block text-sm font-medium ">{t.label}</span>
-                  <span className="block text-slate-500 ">{t.desc}</span>
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 h-6 -translate-y-1/2 w-[3px] rounded-full bg-signal-orange" />
+                )}
+                <Icon
+                  className={`h-4.5 w-4.5 shrink-0 ${isActive ? "text-signal-orange" : "text-ash-grey"}`}
+                />
+                <span className="flex-1 min-w-0">
+                  <span className="block text-sm font-medium tracking-[-0.005em]">
+                    {t.label}
+                  </span>
+                  <span className="block text-xs text-ash-grey">{t.desc}</span>
                 </span>
               </button>
             );
           })}
         </nav>
       </div>
-      <div className="border-slate-200 p-4 dark:border-slate-800 ">
-        <div className="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-900 ">
-          <Settings className="h-4 w-4 text-slate-500 dark:text-slate-500 " />
+      <div className="p-4">
+        <div className="flex items-center gap-2 rounded-[12px] bg-sand-wash/50 px-3 py-2.5">
+          <Settings className="h-4 w-4 text-ash-grey" />
           <div className="text-xs">
-            <p className="font-medium text-slate-700 dark:text-slate-300 ">Ops Console</p>
-            <p className="text-slate-500 dark:text-slate-500 ">CFG-v2026.09.1</p>
+            <p className="font-medium text-ink-roast">Ops Console</p>
+            <p className="text-ash-grey tracking-[0.03em]">CFG-v2026.09.1</p>
           </div>
         </div>
       </div>

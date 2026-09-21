@@ -92,10 +92,10 @@ function nextRuleId(existing: string[]): string {
 function StepBadge({ index, title }: { index: number; title: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-500/15 font-mono text-[11px] font-bold text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-green/15 font-mono text-[11px] font-bold text-emerald-300 ring-1 ring-inset ring-emerald-green/30">
         {index}
       </span>
-      <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+      <span className="text-xs font-semibold uppercase tracking-wider text-ash-grey">
         {title}
       </span>
     </div>
@@ -117,8 +117,8 @@ function PillButton({
       onClick={onClick}
       className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
         active
-          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-          : "border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+          ? "border-emerald-green/40 bg-emerald-green/10 text-emerald-300"
+          : "border-sand-wash bg-white text-ash-grey hover:text-ink-roast:text-slate-200"
       }`}
     >
       {children}
@@ -138,45 +138,45 @@ function RuleCard({ rule }: { rule: RoutingRule }) {
     : "";
 
   return (
-    <div className="rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+    <div className="rounded-2xl border-sand-wash bg-white p-5">
       <div className="flex items-center justify-between gap-3">
         <Badge tone={rule.tone}>{rule.id}</Badge>
-        <span className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <span className="text-[10px] font-medium uppercase tracking-wider text-ash-grey">
           {rule.category}
         </span>
       </div>
 
-      <h4 className="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
+      <h4 className="mt-3 text-sm font-semibold text-ink-roast">
         {rule.name}
       </h4>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3 py-2.5 font-mono text-[11.5px] text-slate-700 dark:text-slate-300">
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 px-1.5 py-0.5 font-sans font-semibold text-emerald-600 dark:text-emerald-300">
+      <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border-sand-wash bg-paper-white px-3 py-2.5 font-mono text-[11.5px] text-ink-roast">
+        <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-green/10 px-1.5 py-0.5 font-sans font-semibold text-emerald-green">
           <Plug className="h-3 w-3" />
           {compactInstitution(rule.sourceInstitution)}
         </span>
-        <span className="text-slate-400 dark:text-slate-500">
+        <span className="text-ash-grey">
           {rule.sourceChannel}
         </span>
-        <span className="text-slate-400 dark:text-slate-500">·</span>
+        <span className="text-ash-grey">·</span>
         <span>
           {leftSpec}
           {dccTag}
         </span>
-        <ArrowRight className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-sky-500/10 px-1.5 py-0.5 font-sans font-semibold text-sky-600 dark:text-sky-300">
+        <ArrowRight className="h-3.5 w-3.5 shrink-0 text-ash-grey" />
+        <span className="inline-flex items-center gap-1.5 rounded-md bg-cobalt-blue/10 px-1.5 py-0.5 font-sans font-semibold text-cobalt-blue">
           <Server className="h-3 w-3" />
           {rule.hostName}
         </span>
-        <span className="text-slate-500 dark:text-slate-400">
+        <span className="text-ash-grey">
           ({fmtSocket(rule)})
         </span>
       </div>
 
       {hasThreshold && (
-        <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
+        <p className="mt-2.5 text-xs text-ash-grey">
           Ticket threshold:{" "}
-          <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">
+          <span className="font-mono font-semibold text-ink-roast">
             Amount &gt; {fmtMoney(rule.amountThresholdIqd!)} IQD
           </span>
         </p>
@@ -193,7 +193,7 @@ function RuleCard({ rule }: { rule: RoutingRule }) {
         </Badge>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3 border-slate-200 dark:border-slate-800 pt-3 text-slate-500 dark:border-slate-800 dark:text-slate-400">
+      <div className="mt-3 flex items-center justify-between gap-3 border-sand-wash pt-3 text-ash-grey">
         <span className="flex items-center gap-1.5">
           <GitBranch className="h-3.5 w-3.5" />
           Orchestration Core · {rule.evaluatedMs}ms
@@ -223,7 +223,7 @@ function Field({
       <FieldLabel>{label}</FieldLabel>
       {children}
       {hint && (
-        <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+        <p className="mt-1 text-[11px] text-ash-grey">
           {hint}
         </p>
       )}
@@ -291,13 +291,13 @@ function IntegrationRequestModal({
       maxWidth="max-w-2xl"
       title={
         <span className="flex items-center gap-2">
-          <Plug className="h-4 w-4 text-sky-400" />
+          <Plug className="h-4 w-4 text-cobalt-blue" />
           Request New Destination Integration
         </span>
       }
     >
       <div className="space-y-5">
-        <p className="rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-3.5 py-2.5 text-xs text-slate-500 dark:text-slate-400">
+        <p className="rounded-xl border-sand-wash bg-paper-white px-3.5 py-2.5 text-xs text-ash-grey">
           Intake only — Switch Engineering provisions the outbound socket,
           validates the specification, and returns a deployable destination.
         </p>
@@ -363,10 +363,10 @@ function IntegrationRequestModal({
           </Field>
         </div>
 
-        <div className="rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4">
+        <div className="rounded-xl border-sand-wash bg-white p-4">
           <div className="mb-3 flex items-center gap-2">
-            <KeyRound className="h-3.5 w-3.5 text-emerald-400" />
-            <p className="text-sm font-medium text-slate-900 dark:text-slate-200">
+            <KeyRound className="h-3.5 w-3.5 text-emerald-green" />
+            <p className="text-sm font-medium text-ink-roast">
               Security Requirements
             </p>
           </div>
@@ -380,32 +380,32 @@ function IntegrationRequestModal({
                   onClick={() => patch({ [opt.key]: !on })}
                   className={`flex items-start gap-2 rounded-lg border px-3 py-2.5 text-left transition ${
                     on
-                      ? "border-emerald-500/40 bg-emerald-500/10"
-                      : "border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900"
+                      ? "border-emerald-green/40 bg-emerald-green/10"
+                      : "border-sand-wash hover:bg-paper-white:bg-paper-white"
                   }`}
                 >
                   <span
                     className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
                       on
-                        ? "border-emerald-500 bg-emerald-500"
-                        : "border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-950"
+                        ? "border-emerald-green bg-emerald-green"
+                        : "border-sand-wash bg-white"
                     }`}
                   >
                     {on && (
-                      <CheckCircle2 className="h-3.5 w-3.5 text-slate-950" />
+                      <CheckCircle2 className="h-3.5 w-3.5 text-ink-roast" />
                     )}
                   </span>
                   <span>
                     <span
                       className={`block text-xs font-semibold ${
                         on
-                          ? "text-emerald-700 dark:text-emerald-300"
-                          : "text-slate-700 dark:text-slate-300"
+                          ? "text-emerald-700"
+                          : "text-ink-roast"
                       }`}
                     >
                       {opt.label}
                     </span>
-                    <span className="block text-[10.5px] text-slate-500 dark:text-slate-400">
+                    <span className="block text-[10.5px] text-ash-grey">
                       {opt.desc}
                     </span>
                   </span>
@@ -417,7 +417,7 @@ function IntegrationRequestModal({
 
         <Field label="Specification URL" className="grid grid-cols-1 gap-2">
           <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 shrink-0 text-slate-400" />
+            <Globe className="h-4 w-4 shrink-0 text-ash-grey" />
             <input
               className={inputCls}
               value={form.specUrl}
@@ -431,7 +431,7 @@ function IntegrationRequestModal({
 
         <div>
           <FieldLabel>Specification Document Upload</FieldLabel>
-          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-slate-400 bg-white dark:border-slate-600 dark:bg-slate-950 px-3 py-4 text-xs text-slate-500 dark:text-slate-400 transition hover:border-emerald-500/50 hover:text-emerald-300">
+          <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-slate-400 bg-white px-3 py-4 text-xs text-ash-grey transition hover:border-emerald-green/50 hover:text-emerald-300">
             <Upload className="h-4 w-4" />
             Drop .pdf / .docx specification, or click to browse
             <input
@@ -443,7 +443,7 @@ function IntegrationRequestModal({
           </label>
         </div>
 
-        <div className="flex justify-end gap-2 border-slate-200 dark:border-slate-800 pt-3 dark:border-slate-800">
+        <div className="flex justify-end gap-2 border-sand-wash pt-3">
           <ButtonGhost onClick={onClose}>Cancel</ButtonGhost>
           <ButtonPrimary
             disabled={!canSubmit}
@@ -465,8 +465,8 @@ function Toast({ message }: { message: string | null }) {
   if (!message) return null;
   return (
     <div className="fixed bottom-6 right-6 z-[80]">
-      <div className="flex items-center gap-2.5 rounded-xl border-slate-700 bg-slate-900 px-4 py-3 text-sm font-medium text-slate-100 shadow-2xl ring-1 ring-emerald-500/30">
-        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+      <div className="flex items-center gap-2.5 rounded-xl border-sand-wash bg-paper-white px-4 py-3 text-sm font-medium text-slate-100 shadow-2xl ring-1 ring-emerald-green/30">
+        <CheckCircle2 className="h-4 w-4 text-emerald-green" />
         {message}
       </div>
     </div>
@@ -585,10 +585,10 @@ export default function RulesTab() {
       <div>
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="text-sm font-semibold text-ink-roast">
               Active Institutional Routing Deck
             </h3>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-ash-grey">
               Multi-tenant protocol mediation · transaction + VAS destination matrix
             </p>
           </div>
@@ -603,7 +603,7 @@ export default function RulesTab() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white">
         <PanelTitle
           title="Rule Builder"
           subtitle="Compose rule type, source criteria, then bind a mediated destination"
@@ -613,10 +613,10 @@ export default function RulesTab() {
         />
 
         <div className="space-y-5 p-6">
-          <div className="rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4">
+          <div className="rounded-xl border-sand-wash bg-white p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <StepBadge index={1} title="Rule Type & Processing Specification" />
-              <span className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5 text-[11px] text-ash-grey">
                 <Workflow className="h-3.5 w-3.5" />
                 Transaction vs VAS service path
               </span>
@@ -649,8 +649,8 @@ export default function RulesTab() {
                     </Field>
 
                     <Field label="Dynamic Currency Conversion (DCC)">
-                      <div className="flex items-center justify-between rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2">
-                        <span className="text-sm text-slate-600 dark:text-slate-300">
+                      <div className="flex items-center justify-between rounded-lg border-sand-wash bg-paper-white px-3 py-2">
+                        <span className="text-sm text-ink-roast/80">
                           Enable DCC routing
                         </span>
                         <Toggle on={dccEnabled} onChange={setDccEnabled} />
@@ -688,10 +688,10 @@ export default function RulesTab() {
             </div>
           </div>
 
-          <div className="rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4">
+          <div className="rounded-xl border-sand-wash bg-white p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <StepBadge index={2} title="Source Criteria" />
-              <span className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5 text-[11px] text-ash-grey">
                 <Plug className="h-3.5 w-3.5" />
                 Tenant / channel / threshold
               </span>
@@ -723,36 +723,36 @@ export default function RulesTab() {
               </Field>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-900">
-              <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300">
+            <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg border border-dashed border-sand-wash bg-paper-white px-3 py-2.5">
+              <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-ink-roast">
                 <input
                   type="checkbox"
                   checked={useThreshold}
                   onChange={(e) => setUseThreshold(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 accent-emerald-500"
+                  className="h-4 w-4 rounded border-sand-wash accent-emerald-green"
                 />
                 Amount ticket threshold
               </label>
               {useThreshold && (
                 <span className="flex items-center gap-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-ash-grey">
                     Amount &gt;
                   </span>
                   <input
                     value={threshold}
                     onChange={(e) => setThreshold(e.target.value)}
-                    className="w-28 rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-1.5 font-mono text-sm text-slate-900 dark:text-slate-200 outline-none transition focus:border-emerald-500/60 focus:ring-emerald-500/20"
+                    className="w-28 rounded-lg border-sand-wash bg-white px-3 py-1.5 font-mono text-sm text-ink-roast outline-none transition focus:border-emerald-green/60 focus:ring-emerald-green/20"
                   />
-                  <span className="text-xs text-slate-500 dark:text-slate-400">IQD</span>
+                  <span className="text-xs text-ash-grey">IQD</span>
                 </span>
               )}
             </div>
           </div>
 
-          <div className="rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4">
+          <div className="rounded-xl border-sand-wash bg-white p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <StepBadge index={3} title="Mediated Destination Criteria" />
-              <span className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5 text-[11px] text-ash-grey">
                 <Network className="h-3.5 w-3.5" />
                 Predefined host matrix
               </span>
@@ -796,32 +796,32 @@ export default function RulesTab() {
               </Field>
 
               <Field label="Mediation Pipeline">
-                <span className="inline-flex w-full items-center gap-2 rounded-full bg-amber-500/10 px-3.5 py-2 text-xs font-semibold text-amber-300 ring-1 ring-inset ring-amber-500/30">
+                <span className="inline-flex w-full items-center gap-2 rounded-full bg-brand-orange-tint/10 px-3.5 py-2 text-xs font-semibold text-amber-300 ring-1 ring-inset ring-brand-orange-tint/30">
                   <Braces className="h-3.5 w-3.5" />
                   {mediationType}
                 </span>
               </Field>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2.5 font-mono text-xs text-slate-700 dark:text-slate-300">
-              <Cable className="h-3.5 w-3.5 text-sky-400" />
-              <span className="font-sans font-semibold text-slate-900 dark:text-slate-100">
+            <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-lg border-sand-wash bg-paper-white px-3 py-2.5 font-mono text-xs text-ink-roast">
+              <Cable className="h-3.5 w-3.5 text-cobalt-blue" />
+              <span className="font-sans font-semibold text-ink-roast">
                 {hostName}
               </span>
               <span>{hostIp}:{hostPort}</span>
               <Wifi
                 className={`h-3.5 w-3.5 ${
                   tlsMode === "None / TCP Direct"
-                    ? "text-rose-400"
-                    : "text-emerald-400"
+                    ? "text-coral-red"
+                    : "text-emerald-green"
                 }`}
               />
               <span className="font-sans">{socketSummary(tlsMode, certName)}</span>
             </div>
           </div>
 
-          <div className="rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4">
-            <p className="mb-3 text-sm font-medium text-slate-900 dark:text-slate-200">
+          <div className="rounded-xl border-sand-wash bg-white p-4">
+            <p className="mb-3 text-sm font-medium text-ink-roast">
               Parameter Drift Enforcement
             </p>
             <div className="flex flex-wrap gap-2">
@@ -831,16 +831,16 @@ export default function RulesTab() {
                 </PillButton>
               ))}
             </div>
-            <div className="mt-3 flex items-center justify-between rounded-lg bg-white dark:bg-slate-900 px-3 py-2">
-              <span className="text-slate-500 dark:text-slate-400">
+            <div className="mt-3 flex items-center justify-between rounded-lg bg-white px-3 py-2">
+              <span className="text-ash-grey">
                 Auto-failover on drift when host unreachable
               </span>
               <Toggle on={enforce} onChange={setEnforce} />
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-slate-200 dark:border-slate-800 pt-1 dark:border-slate-800">
-            <p className="font-mono text-[12.5px] text-slate-300">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-sand-wash pt-1">
+            <p className="font-mono text-[12.5px] text-ash-grey">
               [{institution}] {channel} ·{" "}
               {category === "Transaction Route" ? txType : vasStage}
               {dccEnabled ? ` [DCC: ${dccProvider}]` : ""} ──► {hostName} ({hostIp}:{hostPort}) · JSON ──► {mediationType}
@@ -878,31 +878,31 @@ export default function RulesTab() {
         onClose={() => setDryRun(false)}
         title={
           <span className="flex items-center gap-2">
-            <Beaker className="h-4 w-4 text-emerald-400" />
+            <Beaker className="h-4 w-4 text-emerald-green" />
             Dry-Run Simulation
           </span>
         }
       >
         <div className="space-y-4">
-          <div className="rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 text-center">
-            <p className="font-mono text-slate-700 dark:text-slate-300">
+          <div className="rounded-xl border-sand-wash bg-white p-4 text-center">
+            <p className="font-mono text-ink-roast">
               100 Synthetic ISO messages tested
             </p>
             <div className="mt-2 flex items-center justify-center gap-6">
               <div>
-                <p className="font-mono text-2xl font-semibold text-emerald-400">98%</p>
-                <p className="text-slate-500 dark:text-slate-400">Route Match</p>
+                <p className="font-mono text-2xl font-semibold text-emerald-green">98%</p>
+                <p className="text-ash-grey">Route Match</p>
               </div>
               <div>
-                <p className="font-mono text-2xl font-semibold text-amber-400">+12ms</p>
-                <p className="text-slate-500 dark:text-slate-400">
+                <p className="font-mono text-2xl font-semibold text-brand-orange-tint">+12ms</p>
+                <p className="text-ash-grey">
                   Avg Latency
                 </p>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-            <Route className="h-4 w-4 text-emerald-400" />
+          <div className="flex items-center gap-2 text-ash-grey">
+            <Route className="h-4 w-4 text-emerald-green" />
             No live traffic affected — simulation only.
           </div>
           <div className="flex justify-end">

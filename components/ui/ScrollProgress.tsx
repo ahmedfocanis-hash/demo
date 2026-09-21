@@ -19,7 +19,7 @@ export default function ScrollProgress() {
   return (
     <div
       aria-hidden="true"
-      className="fixed left-0 right-0 top-0 z-50 h-0.5 origin-left bg-emerald-500 transition-transform duration-75 "
+      className="fixed left-0 right-0 top-0 z-50 h-0.5 origin-left bg-emerald-green transition-transform duration-75 "
       style={{ transform: `scaleX(${progress})` }}
     />
   );

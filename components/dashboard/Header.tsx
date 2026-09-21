@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import { Activity, Landmark, Layers, Menu, ShieldCheck } from "lucide-react";
 import type { Persona } from "./data";
-import ThemeToggle from "../ui/ThemeToggle";
 
 const personaMeta: Record<
   Persona,
@@ -40,24 +39,24 @@ export default function Header({
 }) {
   const meta = personaMeta[persona];
   return (
-    <header className="sticky top-0 z-50 border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80 ">
-      <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3.5">
+    <header className="sticky top-0 z-50 border-b border-sand-wash bg-paper-white/80 backdrop-blur-[20px]">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleMobileMenu}
             aria-label="Open navigation"
-            className="rounded-lg border-slate-300 bg-white p-1.5 text-slate-600 transition-all duration-150 hover:border-slate-400 hover:text-slate-900 hover:brightness-110 active:scale-[0.98] cursor-pointer dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-slate-100 md:hidden "
+            className="rounded-[8px] border border-sand-wash p-2 text-ash-grey transition-all duration-150 hover:bg-sand-wash/40 hover:text-ink-roast active:scale-[0.98] cursor-pointer md:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 ring-emerald-500/30 ">
-            <Activity className="h-5 w-5 text-emerald-400 " />
+          <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[rgba(247,59,32,0.05)] ring-1 ring-inset ring-signal-orange/20">
+            <Activity className="h-5 w-5 text-signal-orange" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100 ">
-              BeyondPayments <span className="text-emerald-400 dark:text-emerald-400 ">Gateway</span>
+            <h1 className="text-[17px] font-medium leading-tight tracking-[-0.01em] text-ink-roast">
+              BeyondPayments <span className="text-signal-orange">Gateway</span>
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 ">
+            <p className="text-[11px] font-medium uppercase tracking-[0.03em] text-ash-grey">
               Orchestration Layer · Core Switch · VAS
             </p>
           </div>
@@ -72,10 +71,10 @@ export default function Header({
                 <button
                   key={p}
                   onClick={() => onPersona(p)}
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all duration-150 hover:brightness-110 active:scale-[0.98] cursor-pointer ${
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-[8px] border px-3 py-1.5 text-xs font-medium tracking-[0.03em] transition-all duration-150 hover:brightness-110 active:scale-[0.98] cursor-pointer ${
                     active
-                      ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                      : "border-slate-300 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-200"
+                      ? "border-signal-orange/40 bg-[rgba(247,59,32,0.05)] text-signal-orange"
+                      : "border-sand-wash bg-paper-white text-ash-grey hover:border-ash-grey/50 hover:text-ink-roast"
                   }`}
                 >
                   {m.icon}
@@ -93,26 +92,25 @@ export default function Header({
                 new KeyboardEvent("keydown", { key: "k", ctrlKey: true })
               )
             }
-            className="hidden items-center gap-2 rounded-lg border-slate-300 bg-white px-3 py-1.5 text-slate-500 transition-all duration-150 hover:border-slate-400 hover:text-slate-700 hover:brightness-110 active:scale-[0.98] cursor-pointer dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-200 lg:inline-flex "
+            className="hidden items-center gap-2 rounded-[8px] border border-sand-wash bg-paper-white px-3 py-1.5 text-xs text-ash-grey transition-all duration-150 hover:border-ash-grey/50 hover:text-ink-roast active:scale-[0.98] cursor-pointer lg:inline-flex"
           >
             Search…
-            <kbd className="rounded bg-slate-100 px-1.5 py-0.5 text-slate-500 dark:bg-slate-800 dark:text-slate-400 ">
+            <kbd className="rounded-[4px] bg-sand-wash/60 px-1.5 py-0.5 font-mono text-[10px] font-medium text-ink-roast">
               Ctrl K
             </kbd>
           </button>
-          <div className="hidden items-center gap-2 rounded-full border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 lg:flex ">
-            <span className="pulse-dot h-2 w-2 rounded-full bg-emerald-400 " />
-            <span className="text-[11px] font-medium text-emerald-300 ">
+          <div className="hidden items-center gap-2 rounded-full bg-sand-wash/50 px-3 py-1.5 lg:flex">
+            <span className="pulse-dot h-2 w-2 rounded-full bg-signal-orange" />
+            <span className="text-[11px] font-medium tracking-[0.03em] text-ink-roast">
               All Systems Operational
             </span>
-            <span className="text-emerald-500/70">
+            <span className="text-[11px] text-ash-grey">
               Core Switch Latency: 142ms
             </span>
           </div>
-          <div className="hidden rounded-full border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-600 lg:block dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 ">
+          <div className="hidden rounded-full bg-sand-wash/50 px-3 py-1.5 text-[11px] font-medium tracking-[0.03em] text-ink-roast lg:block">
             {meta.label}
           </div>
-          <ThemeToggle />
         </div>
       </div>
     </header>

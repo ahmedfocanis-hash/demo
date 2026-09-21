@@ -1,80 +1,208 @@
 @import "tailwindcss";
 
-/* Tailwind v4: enable class-based dark mode (equivalent of `darkMode: "class"`).
-   The `.dark` variant now matches an element that is itself `.dark` or a descendant
-   of `.dark`, so toggling `document.documentElement.classList` on `<html>` flips
-   every `dark:*` utility across the app. */
-@custom-variant dark (&:where(.dark, .dark *));
+/* ============================================================
+   Jeton - Editorial Fintech on Warm Marble
+   Light-only theme: paper-white canvas, single signal-orange
+   accent, ink-roast body text, editorial Manrope typography,
+   16px-radius cards with the signature inverted shadow.
+   ============================================================ */
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+@theme {
+  --color-signal-orange: #f73b20;
+  --color-brand-orange-tint: #f84d35;
+  --color-ink-roast: #360802;
+  --color-paper-white: #ffffff;
+  --color-carbon-black: #000000;
+  --color-ash-grey: #ababab;
+  --color-sand-wash: #e7dcdb;
+  --color-linen-blush: #fdedea;
+  --color-citrus-wash: #f5ffbb;
+  --color-mint-wash: #bcffbb;
+  --color-coral-red: #fb2d54;
+  --color-cobalt-blue: #477ee9;
+  --color-emerald-green: #34c771;
+
+  --surface-canvas: #ffffff;
+  --surface-card-surface: #ffffff;
+  --surface-orange-tint: #fdedea;
+  --surface-frosted-glass: #ffffff1a;
+  --surface-category-tint: #f73b200d;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-caption: 12px;
+  --leading-caption: 1.5;
+  --tracking-caption: 0.36px;
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.4;
+  --tracking-body-sm: 0.42px;
+  --text-body: 16px;
+  --leading-body: 1;
+  --text-subheading: 23px;
+  --leading-subheading: 1.2;
+  --tracking-subheading: 0.23px;
+  --text-heading-sm: 33px;
+  --leading-heading-sm: 1.2;
+  --tracking-heading-sm: 0.33px;
+  --text-heading: 44px;
+  --leading-heading: 1.2;
+  --tracking-heading: 0.44px;
+  --text-heading-lg: 72px;
+  --leading-heading-lg: 1;
+  --tracking-heading-lg: 0.72px;
+  --text-display: 106px;
+  --leading-display: 1;
+
+  --spacing-unit: 4px;
+  --radius-buttons: 12px;
+  --radius-inputs: 16px;
+  --radius-cards: 16px;
+  --radius-links: 8px;
+  --radius-pills: 9999px;
+  --radius-nav: 84px;
+  --shadow-card-invert: rgba(0, 0, 0, 0.05) 0px -4px 16px 0px;
+  --shadow-floating: rgba(247, 59, 32, 0.1) 0px 8px 24px 0px, rgba(247, 59, 32, 0.05) 0px 2px 8px 0px;
+
+  --color-slate-50: #fbf9f7;
+  --color-slate-100: #f4eeec;
+  --color-slate-200: #e7dcdb;
+  --color-slate-300: #d9cdc9;
+  --color-slate-400: #ababab;
+  --color-slate-500: #8a8a8a;
+  --color-slate-600: #5b4a45;
+  --color-slate-700: #4a2b22;
+  --color-slate-800: #360802;
+  --color-slate-900: #240500;
+  --color-slate-950: #1a0300;
+  --color-gray-100: #f4eeec;
+  --color-gray-200: #e7dcdb;
+  --color-gray-300: #d9cdc9;
+  --color-gray-500: #8a8a8a;
+  --color-gray-700: #4a2b22;
+  --color-gray-800: #360802;
+  --color-gray-900: #240500;
+  --color-neutral-100: #f4eeec;
+  --color-neutral-200: #e7dcdb;
+  --color-neutral-500: #8a8a8a;
+  --color-neutral-700: #4a2b22;
+  --color-neutral-800: #360802;
+  --color-zinc-100: #f4eeec;
+  --color-zinc-200: #e7dcdb;
+  --color-zinc-500: #8a8a8a;
+  --color-zinc-800: #360802;
+  --color-zinc-900: #240500;
+
+  --color-emerald-50: #fdedea;
+  --color-emerald-100: #fdedea;
+  --color-emerald-200: #f9c9bd;
+  --color-emerald-300: #f84d35;
+  --color-emerald-400: #f73b20;
+  --color-emerald-500: #f73b20;
+  --color-emerald-600: #c92f18;
+  --color-emerald-700: #8a2010;
+  --color-emerald-800: #4a2b22;
+  --color-emerald-900: #360802;
+  --color-emerald-950: #360802;
+  --color-sky-800: #2a4f9e;
+  --color-sky-900: #1a3a7a;
+  --color-sky-950: #1a3a7a;
+  --color-violet-800: #2a4f9e;
+  --color-violet-900: #1a3a7a;
+  --color-violet-950: #1a3a7a;
+  --color-cyan-800: #2a4f9e;
+  --color-cyan-900: #1a3a7a;
+  --color-cyan-950: #1a3a7a;
+  --color-amber-800: #4a2b22;
+  --color-amber-900: #360802;
+  --color-amber-950: #360802;
+  --color-rose-700: #8a2010;
+  --color-rose-800: #4a2b22;
+  --color-rose-900: #360802;
+  --color-rose-950: #360802;
+
+  --color-sky-50: #eaf0fd;
+  --color-sky-100: #eaf0fd;
+  --color-sky-200: #c5d6f7;
+  --color-sky-300: #7da1e4;
+  --color-sky-400: #477ee9;
+  --color-sky-500: #477ee9;
+  --color-sky-600: #3461b8;
+  --color-violet-50: #eaf0fd;
+  --color-violet-100: #eaf0fd;
+  --color-violet-200: #c5d6f7;
+  --color-violet-300: #7da1e4;
+  --color-violet-400: #477ee9;
+  --color-violet-500: #477ee9;
+  --color-violet-600: #3461b8;
+  --color-cyan-50: #eaf0fd;
+  --color-cyan-100: #eaf0fd;
+  --color-cyan-200: #c5d6f7;
+  --color-cyan-300: #7da1e4;
+  --color-cyan-400: #477ee9;
+  --color-cyan-500: #477ee9;
+  --color-cyan-600: #3461b8;
+  --color-amber-50: #fdedea;
+  --color-amber-100: #fdedea;
+  --color-amber-200: #f9c9bd;
+  --color-amber-300: #f84d35;
+  --color-amber-400: #f73b20;
+  --color-amber-500: #f73b20;
+  --color-amber-600: #c92f18;
+  --color-rose-50: #fde5ec;
+  --color-rose-100: #fde5ec;
+  --color-rose-200: #f9bfd0;
+  --color-rose-300: #fb2d54;
+  --color-rose-400: #fb2d54;
+  --color-rose-500: #fb2d54;
+  --color-rose-600: #c41e3d;
+  --color-orange-50: #fdedea;
+  --color-orange-400: #f84d35;
+  --color-orange-500: #f73b20;
+  --color-orange-600: #c92f18;
+  --color-red-400: #fb2d54;
+  --color-red-500: #fb2d54;
+  --color-red-600: #c41e3d;
+  --color-teal-400: #477ee9;
+  --color-teal-500: #477ee9;
+  --color-indigo-400: #477ee9;
+  --color-indigo-500: #477ee9;
+
+  --color-background: #ffffff;
+  --color-foreground: #360802;
 }
 
-.dark {
-  --background: #060b18;
-  --foreground: #f8fafc;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+html { color-scheme: light; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--color-paper-white);
+  color: var(--color-ink-roast);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01" on, "cv11" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Thin scrollbars for the terminal/dark aesthetic */
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-*::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 9999px;
-}
-*::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #d9cdc9; border-radius: 9999px; }
+*::-webkit-scrollbar-thumb:hover { background: #ababab; }
+:focus-visible {
+  outline: 2px solid rgba(247, 59, 32, 0.5);
+  outline-offset: 2px;
 }
 
-/* Subtle pulse used for the system health pill */
-@keyframes softpulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
-}
-.pulse-dot {
-  animation: softpulse 2s ease-in-out infinite;
-}
+@keyframes softpulse { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+.pulse-dot { animation: softpulse 2s ease-in-out infinite; }
+@keyframes slideInRight { from { transform:translateX(100%); } to { transform:translateX(0); } }
+.animate-slide-in-right { animation: slideInRight 0.28s cubic-bezier(0.32,0.72,0,1); }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.animate-fade-in-up { animation: fadeInUp 0.25s ease-out; }
+@keyframes modalPop { from { opacity:0; transform:translateY(14px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+.animate-modal-pop { animation: modalPop 0.22s ease-out; }
 
-/* Slide-in for drawers / modals */
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-.animate-slide-in-right {
-  animation: slideInRight 0.28s cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in-up {
-  animation: fadeInUp 0.25s ease-out;
-}
-
-@keyframes modalPop {
-  from { opacity: 0; transform: translateY(14px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.animate-modal-pop {
-  animation: modalPop 0.22s ease-out;
-}
+.card { background: var(--color-paper-white); border-radius: var(--radius-cards); box-shadow: var(--shadow-card-invert); }
+.card--tint { background: rgba(247,59,32,0.05); box-shadow: none; }
+.paper { background: var(--color-paper-white); }
+.tinted { background: rgba(247,59,32,0.05); }
+.sand { background: var(--color-sand-wash); }
+.linen { background: var(--color-linen-blush); }

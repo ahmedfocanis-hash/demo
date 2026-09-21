@@ -59,22 +59,22 @@ export default function SettlementTab() {
       label: "Total Batches",
       value: String(rows.length),
       icon: Package,
-      tone: "text-slate-700 dark:text-slate-300 ",
-      bg: "bg-slate-500/10 ring-slate-500/20 ",
+      tone: "text-ink-roast ",
+      bg: "bg-paper-white0/10 ring-slate-500/20 ",
     },
     {
       label: "Delivered & Acknowledged",
       value: String(delivered),
       icon: CheckCircle2,
-      tone: "text-emerald-400",
-      bg: "bg-emerald-500/10 ring-emerald-500/20 ",
+      tone: "text-emerald-green",
+      bg: "bg-emerald-green/10 ring-emerald-green/20 ",
     },
     {
       label: "NACK / Failed",
       value: String(failed),
       icon: XCircle,
-      tone: "text-rose-400",
-      bg: "bg-rose-500/10 ring-rose-500/20 ",
+      tone: "text-coral-red",
+      bg: "bg-coral-red/10 ring-coral-red/20 ",
     },
   ];
 
@@ -87,10 +87,10 @@ export default function SettlementTab() {
           return (
             <div
               key={s.label}
-              className={`rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 ${s.bg}`}
+              className={`rounded-2xl border-sand-wash bg-white p-5 ${s.bg}`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 ">{s.label}</p>
+                <p className="text-xs font-medium text-ash-grey ">{s.label}</p>
                 <Icon className={`h-4 w-4 ${s.tone}`} />
               </div>
               <p className={`mt-3 font-mono text-3xl font-semibold ${s.tone}`}>
@@ -102,7 +102,7 @@ export default function SettlementTab() {
       </div>
 
       {/* Batch table */}
-      <div className="overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="Settlement Delivery Lifecycle"
           subtitle="EOD batch transmission, acknowledgment & NACK handling"
@@ -111,7 +111,7 @@ export default function SettlementTab() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px] text-sm ">
             <thead>
-              <tr className="border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 ">
+              <tr className="border-sand-wash text-[11px] uppercase tracking-wider text-ash-grey ">
                 <th className="px-4 py-3 font-medium">Batch ID</th>
                 <th className="px-4 py-3 font-medium">Acquirer / Destination</th>
                 <th className="px-4 py-3 font-medium">Amount (IQD)</th>
@@ -125,18 +125,18 @@ export default function SettlementTab() {
               {rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-slate-200 dark:border-slate-800/60 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40 "
+                  className="border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 "
                 >
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2 font-mono text-xs font-semibold text-slate-900 dark:text-slate-100 ">
+                    <div className="flex items-center gap-2 font-mono text-xs font-semibold text-ink-roast ">
                       {row.id}
                       {row.rev && (
                         <Badge tone="violet">{row.rev}</Badge>
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300 ">{row.dest}</td>
-                  <td className="px-4 py-3 font-mono text-xs font-medium text-slate-900 dark:text-slate-100 ">
+                  <td className="px-4 py-3 text-ink-roast ">{row.dest}</td>
+                  <td className="px-4 py-3 font-mono text-xs font-medium text-ink-roast ">
                     {Number(row.volume).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">
@@ -147,7 +147,7 @@ export default function SettlementTab() {
                       {row.status}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 font-mono text-slate-500 dark:text-slate-400 ">
+                  <td className="px-4 py-3 font-mono text-ash-grey ">
                     {row.timestamp}
                   </td>
                   <td className="px-4 py-3">
@@ -167,9 +167,9 @@ export default function SettlementTab() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 rounded-2xl border-rose-500/20 bg-rose-500/5 px-5 py-3 ">
-        <FileX2 className="h-4 w-4 text-rose-400 " />
-        <p className="text-slate-500 dark:text-slate-400 ">
+      <div className="flex items-center gap-3 rounded-2xl border-coral-red/20 bg-coral-red/5 px-5 py-3 ">
+        <FileX2 className="h-4 w-4 text-coral-red " />
+        <p className="text-ash-grey ">
           <span className="font-semibold text-rose-300 ">
             STL-88217 · Zain Cash PSP
           </span>{" "}

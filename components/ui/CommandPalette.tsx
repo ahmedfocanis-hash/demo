@@ -93,30 +93,30 @@ export default function CommandPalette({
   return (
     <div className="fixed inset-0 z-[90] flex items-start justify-center p-4 pt-[12vh]">
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm "
+        className="absolute inset-0 bg-ink-roast/40 backdrop-blur-sm "
         onClick={() => setOpen(false)}
       />
-      <div className="animate-modal-pop relative w-full max-w-lg overflow-hidden rounded-2xl border-slate-800 bg-slate-950 shadow-2xl ">
-        <div className="flex items-center gap-2.5 border-slate-800 px-4 py-3 ">
-          <Search className="h-4 w-4 text-slate-500 " />
+      <div className="animate-modal-pop relative w-full max-w-lg overflow-hidden rounded-2xl border-sand-wash bg-paper-white shadow-2xl ">
+        <div className="flex items-center gap-2.5 border-sand-wash px-4 py-3 ">
+          <Search className="h-4 w-4 text-ash-grey " />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search transactions, terminals, rules, tabs…"
-            className="flex-1 bg-transparent text-slate-100 outline-none placeholder:text-slate-500 "
+            className="flex-1 bg-transparent text-slate-100 outline-none placeholder:text-ash-grey "
           />
           <button
             onClick={() => setOpen(false)}
             aria-label="Close search"
-            className="rounded-md p-1 text-slate-500 transition hover:bg-slate-800 hover:text-slate-200 cursor-pointer "
+            className="rounded-md p-1 text-ash-grey transition hover:bg-slate-800 hover:text-slate-200 cursor-pointer "
           >
             <X className="h-4 w-4" />
           </button>
         </div>
         <div className="max-h-80 overflow-y-auto py-2">
           {results.length === 0 ? (
-            <p className="px-4 py-6 text-slate-500 ">
+            <p className="px-4 py-6 text-ash-grey ">
               No results for “{query}”.
             </p>
           ) : (
@@ -127,26 +127,26 @@ export default function CommandPalette({
                   if (r.tab) onNavigate(r.tab);
                   setOpen(false);
                 }}
-                className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-all duration-150 hover:bg-slate-900 active:scale-[0.99] cursor-pointer "
+                className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-all duration-150 hover:bg-paper-white active:scale-[0.99] cursor-pointer "
               >
                 <span>
                   <span className="block text-sm font-medium text-slate-200 ">
                     {r.label}
                   </span>
                   {r.detail && (
-                    <span className="block text-slate-500 ">
+                    <span className="block text-ash-grey ">
                       {r.detail}
                     </span>
                   )}
                 </span>
-                <span className="shrink-0 rounded-full bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-slate-400 ">
+                <span className="shrink-0 rounded-full bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-ash-grey ">
                   {r.group}
                 </span>
               </button>
             ))
           )}
         </div>
-        <div className="border-slate-800 px-4 py-2 text-slate-600 ">
+        <div className="border-sand-wash px-4 py-2 text-ink-roast/80 ">
           Ctrl/⌘ + K to toggle · Esc to close
         </div>
       </div>

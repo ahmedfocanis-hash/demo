@@ -37,8 +37,8 @@ export default function CopyButton({
       onClick={copy}
       className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-all duration-150 active:scale-[0.98] cursor-pointer ${
         copied
-          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
-          : "border-slate-700 bg-slate-900 text-slate-400 hover:border-slate-600 hover:text-slate-200 hover:brightness-110"
+          ? "border-emerald-green/40 bg-emerald-green/10 text-emerald-300"
+          : "border-sand-wash bg-paper-white text-ash-grey hover:border-slate-600 hover:text-slate-200 hover:brightness-110"
       } ${className}`}
     >
       {copied ? (

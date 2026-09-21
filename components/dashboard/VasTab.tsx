@@ -77,29 +77,29 @@ export default function VasTab() {
       label: "Today's VAS Volume",
       value: `${(totalVolume / 1_000_000).toFixed(1)}M IQD`,
       icon: Wallet,
-      tone: "text-slate-900 dark:text-slate-100 ",
-      bg: "bg-slate-500/10 ring-slate-500/20 ",
+      tone: "text-ink-roast ",
+      bg: "bg-paper-white0/10 ring-slate-500/20 ",
     },
     {
       label: "24h VAS Transactions",
       value: `${fmtIqd(totalTx)} tx`,
       icon: Activity,
-      tone: "text-cyan-400",
-      bg: "bg-cyan-500/10 ring-cyan-500/20 ",
+      tone: "text-cobalt-blue",
+      bg: "bg-cobalt-blue/10 ring-cobalt-blue/20 ",
     },
     {
       label: "Switch Success Rate",
       value: `${avgSuccess.toFixed(1)}%`,
       icon: Gauge,
-      tone: "text-emerald-400",
-      bg: "bg-emerald-500/10 ring-emerald-500/20 ",
+      tone: "text-emerald-green",
+      bg: "bg-emerald-green/10 ring-emerald-green/20 ",
     },
     {
       label: "Active Providers",
       value: `${activeProviders} / ${vasCatalogData.length} Active`,
       icon: Smartphone,
-      tone: "text-violet-400",
-      bg: "bg-violet-500/10 ring-violet-500/20 ",
+      tone: "text-signal-orange",
+      bg: "bg-signal-orange/10 ring-signal-orange/20 ",
     },
   ];
 
@@ -112,10 +112,10 @@ export default function VasTab() {
           return (
             <div
               key={s.label}
-              className={`rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 ${s.bg}`}
+              className={`rounded-2xl border-sand-wash bg-white p-5 ${s.bg}`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 ">{s.label}</p>
+                <p className="text-xs font-medium text-ash-grey ">{s.label}</p>
                 <Icon className={`h-4 w-4 ${s.tone}`} />
               </div>
               <p className={`mt-3 font-mono text-3xl font-semibold ${s.tone}`}>
@@ -127,7 +127,7 @@ export default function VasTab() {
       </div>
 
       {/* Provider catalog */}
-      <div className="overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="VAS Provider Catalog"
           subtitle="Billers, switches & commission schedules"
@@ -136,7 +136,7 @@ export default function VasTab() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1000px] text-sm ">
             <thead>
-              <tr className="border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 ">
+              <tr className="border-sand-wash text-[11px] uppercase tracking-wider text-ash-grey ">
                 <th className="px-4 py-3 font-medium">Service Name</th>
                 <th className="px-4 py-3 font-medium">Code</th>
                 <th className="px-4 py-3 font-medium">Category</th>
@@ -151,22 +151,22 @@ export default function VasTab() {
               {vasCatalogData.map((svc) => (
                 <tr
                   key={svc.id}
-                  className="border-slate-200 dark:border-slate-800/60 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40 "
+                  className="border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 "
                 >
                   <td className="px-4 py-3">
-                    <div className="font-medium text-slate-900 dark:text-slate-100 ">{svc.name}</div>
+                    <div className="font-medium text-ink-roast ">{svc.name}</div>
                     <div className="mt-0.5 flex flex-wrap gap-1">
                       {svc.supportedChannels.map((ch) => (
                         <span
                           key={ch}
-                          className="rounded bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 "
+                          className="rounded bg-paper-white px-1.5 py-0.5 text-[10px] font-medium text-ash-grey "
                         >
                           {ch}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 ">
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-ink-roast ">
                     {svc.code}
                   </td>
                   <td className="px-4 py-3">
@@ -174,16 +174,16 @@ export default function VasTab() {
                       {categoryLabel[svc.category]}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300 ">{svc.provider}</td>
-                  <td className="px-4 py-3 font-mono text-slate-900 dark:text-slate-200 ">
+                  <td className="px-4 py-3 text-ink-roast ">{svc.provider}</td>
+                  <td className="px-4 py-3 font-mono text-ink-roast ">
                     {svc.feeValue}
-                    <span className="ml-1.5 text-[10px] uppercase text-slate-500 dark:text-slate-400 ">
+                    <span className="ml-1.5 text-[10px] uppercase text-ash-grey ">
                       {svc.feeType}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-slate-900 dark:text-slate-100 ">
+                  <td className="px-4 py-3 font-mono text-ink-roast ">
                     {fmtIqd(svc.dailyVolumeIqd)}
-                    <span className="ml-1 text-slate-500 dark:text-slate-400 ">
+                    <span className="ml-1 text-ash-grey ">
                       ({fmtIqd(svc.txCount24h)} tx)
                     </span>
                   </td>
@@ -191,10 +191,10 @@ export default function VasTab() {
                     <span
                       className={`font-mono text-xs font-medium ${
                         svc.successRate >= 95
-                          ? "text-emerald-400"
+                          ? "text-emerald-green"
                           : svc.successRate >= 90
-                          ? "text-amber-400"
-                          : "text-rose-400"
+                          ? "text-brand-orange-tint"
+                          : "text-coral-red"
                       }`}
                     >
                       {svc.successRate.toFixed(1)}%
@@ -213,7 +213,7 @@ export default function VasTab() {
       </div>
 
       {/* Recent VAS transactions */}
-      <div className="overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="Recent VAS Transactions"
           subtitle="Live stream of bill payments, top-ups & FX conversions"
@@ -222,7 +222,7 @@ export default function VasTab() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] text-sm ">
             <thead>
-              <tr className="border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 ">
+              <tr className="border-sand-wash text-[11px] uppercase tracking-wider text-ash-grey ">
                 <th className="px-4 py-3 font-medium">Timestamp</th>
                 <th className="px-4 py-3 font-medium">Correlation ID</th>
                 <th className="px-4 py-3 font-medium">Service</th>
@@ -237,31 +237,31 @@ export default function VasTab() {
               {vasTransactionsData.map((tx) => (
                 <tr
                   key={tx.id}
-                  className="border-slate-200 dark:border-slate-800/60 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40 "
+                  className="border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 "
                 >
-                  <td className="px-4 py-3 font-mono text-slate-500 dark:text-slate-400 ">
+                  <td className="px-4 py-3 font-mono text-ash-grey ">
                     {tx.timestamp}
                   </td>
-                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300 ">
+                  <td className="px-4 py-3 font-mono text-ink-roast ">
                     {tx.correlationId}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-slate-900 dark:text-slate-100 ">{tx.serviceName}</div>
-                    <div className="mt-0.5 font-mono text-slate-500 dark:text-slate-400 ">
+                    <div className="font-medium text-ink-roast ">{tx.serviceName}</div>
+                    <div className="mt-0.5 font-mono text-ash-grey ">
                       {tx.serviceCode} · {tx.channel} · {tx.terminalId}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-700 dark:text-slate-300 ">{tx.provider}</td>
-                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300 ">
+                  <td className="px-4 py-3 text-ink-roast ">{tx.provider}</td>
+                  <td className="px-4 py-3 font-mono text-ink-roast ">
                     {tx.referenceNo}
-                    <div className="mt-0.5 text-slate-500 dark:text-slate-400 ">
+                    <div className="mt-0.5 text-ash-grey ">
                       {tx.merchantName}
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs font-medium text-slate-900 dark:text-slate-100 ">
+                  <td className="px-4 py-3 font-mono text-xs font-medium text-ink-roast ">
                     {fmtAmount(tx.amount, tx.currency)}
                   </td>
-                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300 ">
+                  <td className="px-4 py-3 font-mono text-ink-roast ">
                     {fmtAmount(tx.fee, tx.currency)}
                   </td>
                   <td className="px-4 py-3">

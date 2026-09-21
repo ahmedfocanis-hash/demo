@@ -63,7 +63,7 @@ export default function OnboardingTab() {
 
   return (
     <div className="space-y-5">
-      <div className="overflow-hidden rounded-2xl border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="Merchant Onboarding & Propagation"
           subtitle="3-step wizard → downstream TMS / Switch / VAS sync"
@@ -71,24 +71,24 @@ export default function OnboardingTab() {
         />
 
         {/* Step indicator */}
-        <div className="flex items-center gap-3 border-slate-800 px-5 py-4 ">
+        <div className="flex items-center gap-3 border-sand-wash px-5 py-4 ">
           {["Profile", "MID & TIDs", "Features & VAS"].map((label, i) => (
             <div key={label} className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <span
                   className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${
                     i < step
-                      ? "bg-emerald-500 text-slate-950"
+                      ? "bg-emerald-green text-ink-roast"
                       : i === step
-                      ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/40"
-                      : "bg-slate-800 text-slate-500"
+                      ? "bg-emerald-green/15 text-emerald-300 ring-emerald-green/40"
+                      : "bg-slate-800 text-ash-grey"
                   }`}
                 >
                   {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
                 </span>
                 <span
                   className={`text-xs font-medium ${
-                    i === step ? "text-slate-100" : "text-slate-500"
+                    i === step ? "text-slate-100" : "text-ash-grey"
                   }`}
                 >
                   {label}
@@ -143,10 +143,10 @@ export default function OnboardingTab() {
               {/* Step 2 */}
               {step === 1 && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between rounded-xl border-slate-800 bg-slate-950 px-4 py-3 ">
+                  <div className="flex items-center justify-between rounded-xl border-sand-wash bg-paper-white px-4 py-3 ">
                     <div>
-                      <p className="text-slate-500">Merchant ID</p>
-                      <p className="mt-0.5 flex items-center gap-2 font-mono text-lg font-semibold text-emerald-400 ">
+                      <p className="text-ash-grey">Merchant ID</p>
+                      <p className="mt-0.5 flex items-center gap-2 font-mono text-lg font-semibold text-emerald-green ">
                         <Hash className="h-4 w-4" />
                         MID-772901-IRQ
                       </p>
@@ -158,7 +158,7 @@ export default function OnboardingTab() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setTidCount((c) => Math.max(1, c - 1))}
-                        className="rounded-lg border-slate-700 bg-slate-900 px-3 py-2 text-slate-300 transition hover:bg-slate-800 "
+                        className="rounded-lg border-sand-wash bg-paper-white px-3 py-2 text-ash-grey transition hover:bg-slate-800 "
                       >
                         −
                       </button>
@@ -169,11 +169,11 @@ export default function OnboardingTab() {
                       />
                       <button
                         onClick={() => setTidCount((c) => c + 1)}
-                        className="rounded-lg border-slate-700 bg-slate-900 px-3 py-2 text-slate-300 transition hover:bg-slate-800 "
+                        className="rounded-lg border-sand-wash bg-paper-white px-3 py-2 text-ash-grey transition hover:bg-slate-800 "
                       >
                         +
                       </button>
-                      <span className="ml-2 text-slate-500 ">
+                      <span className="ml-2 text-ash-grey ">
                         TIDs will be pre-provisioned as TID-77301…TID-{77300 + tidCount}
                       </span>
                     </div>
@@ -187,7 +187,7 @@ export default function OnboardingTab() {
                   {FEATURES.map((f) => (
                     <div
                       key={f.key}
-                      className="flex items-center justify-between rounded-xl border-slate-800 bg-slate-950 px-4 py-3 "
+                      className="flex items-center justify-between rounded-xl border-sand-wash bg-paper-white px-4 py-3 "
                     >
                       <span className="text-sm font-medium text-slate-200 ">
                         {f.label}
@@ -208,7 +208,7 @@ export default function OnboardingTab() {
                     <ChevronLeft className="h-4 w-4" /> Back
                   </ButtonGhost>
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-500">Checker</span>
+                    <span className="text-ash-grey">Checker</span>
                     <Toggle on={checkerOk} onChange={setCheckerOk} />
                   </div>
                 </div>
@@ -232,7 +232,7 @@ export default function OnboardingTab() {
             /* ------------------------ Propagation sync ------------------------ */
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <CloudUpload className="h-5 w-5 text-emerald-400 " />
+                <CloudUpload className="h-5 w-5 text-emerald-green " />
                 <p className="text-sm font-semibold text-slate-100 ">
                   Propagation complete — downstream estate synced
                 </p>
@@ -249,10 +249,10 @@ export default function OnboardingTab() {
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="flex items-center justify-between rounded-xl border-slate-800 bg-slate-950 px-4 py-3 "
+                    className="flex items-center justify-between rounded-xl border-sand-wash bg-paper-white px-4 py-3 "
                   >
                     <span className="flex items-center gap-2 text-sm font-medium text-slate-200 ">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400 " />
+                      <CheckCircle2 className="h-4 w-4 text-emerald-green " />
                       {s.label}
                     </span>
                     <span className="font-mono text-emerald-300 ">
@@ -260,9 +260,9 @@ export default function OnboardingTab() {
                     </span>
                   </div>
                 ))}
-                <div className="flex items-center justify-between rounded-xl border-emerald-500/20 bg-emerald-500/5 px-4 py-3 ">
+                <div className="flex items-center justify-between rounded-xl border-emerald-green/20 bg-emerald-green/5 px-4 py-3 ">
                   <span className="flex items-center gap-2 text-sm font-medium text-slate-200 ">
-                    <Landmark className="h-4 w-4 text-emerald-400 " />
+                    <Landmark className="h-4 w-4 text-emerald-green " />
                     Config Revision
                   </span>
                   <span className="font-mono text-emerald-300 ">
@@ -271,12 +271,12 @@ export default function OnboardingTab() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 border-slate-800 pt-4 ">
+              <div className="flex items-center gap-3 border-sand-wash pt-4 ">
                 <div className="flex -space-x-2">
-                  <Users className="h-5 w-5 rounded-full bg-slate-800 p-1 text-slate-300 ring-slate-900 " />
-                  <Users className="h-5 w-5 rounded-full bg-slate-800 p-1 text-slate-300 ring-slate-900 " />
+                  <Users className="h-5 w-5 rounded-full bg-slate-800 p-1 text-ash-grey ring-slate-900 " />
+                  <Users className="h-5 w-5 rounded-full bg-slate-800 p-1 text-ash-grey ring-slate-900 " />
                 </div>
-                <p className="text-slate-500">
+                <p className="text-ash-grey">
                   Sync initiated by Ops · Maker-Checker approved · audit ref
                   ONB-2417
                 </p>

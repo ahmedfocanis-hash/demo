@@ -19,7 +19,7 @@ export default function Accordion({
   const [openId, setOpenId] = useState<string | null>(defaultOpenId ?? null);
 
   return (
-    <div className="divide-slate-800 overflow-hidden rounded-2xl border-slate-800 bg-slate-900 ">
+    <div className="divide-sand-wash overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
       {items.map((item) => {
         const open = openId === item.id;
         return (
@@ -33,13 +33,13 @@ export default function Accordion({
                 {item.title}
               </span>
               <ChevronDown
-                className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 ${
-                  open ? "rotate-180 text-emerald-400" : ""
+                className={`h-4 w-4 shrink-0 text-ash-grey transition-transform duration-200 ${
+                  open ? "rotate-180 text-emerald-green" : ""
                 }`}
               />
             </button>
             {open && (
-              <div className="animate-fade-in-up border-slate-800/60 px-4 py-3.5 text-xs leading-relaxed text-slate-400 ">
+              <div className="animate-fade-in-up border-sand-wash/60 px-4 py-3.5 text-xs leading-relaxed text-ash-grey ">
                 {item.content}
               </div>
             )}

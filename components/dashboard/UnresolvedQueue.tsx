@@ -70,7 +70,7 @@ export default function UnresolvedQueue() {
 
   return (
     <div className="space-y-5">
-      <div className="overflow-hidden rounded-2xl border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="Stuck & Unresolved Queue"
           subtitle="REQ-MON-007 → 013 · non-terminal transactions requiring intervention"
@@ -86,7 +86,7 @@ export default function UnresolvedQueue() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[820px] text-sm ">
             <thead>
-              <tr className="border-slate-800 text-[11px] uppercase tracking-wider text-slate-500 ">
+              <tr className="border-sand-wash text-[11px] uppercase tracking-wider text-ash-grey ">
                 <th className="px-4 py-3 font-medium">Amount</th>
                 <th className="px-4 py-3 font-medium">Type</th>
                 <th className="px-4 py-3 font-medium">Merchant</th>
@@ -98,8 +98,8 @@ export default function UnresolvedQueue() {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-slate-500 ">
-                    <CheckCircle2 className="mx-auto mb-2 h-6 w-6 text-emerald-500 " />
+                  <td colSpan={6} className="px-4 py-10 text-ash-grey ">
+                    <CheckCircle2 className="mx-auto mb-2 h-6 w-6 text-emerald-green " />
                     Queue clear — no unresolved items.
                   </td>
                 </tr>
@@ -107,41 +107,41 @@ export default function UnresolvedQueue() {
                 rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-slate-800/60 transition hover:bg-slate-800/40 "
+                    className="border-sand-wash/60 bg-[rgba(247,59,32,0.04)] border-l-4 border-l-signal-orange transition hover:bg-[rgba(247,59,32,0.07)] "
                   >
                     <td className="px-4 py-3 font-mono text-sm font-medium text-slate-100 ">
                       {row.amount}{" "}
-                      <span className="text-slate-500">IQD</span>
+                      <span className="text-ash-grey">IQD</span>
                     </td>
-                    <td className="px-4 py-3 text-xs font-medium text-slate-300 ">
+                    <td className="px-4 py-3 text-xs font-medium text-ash-grey ">
                       {row.type}
                     </td>
-                    <td className="px-4 py-3 text-slate-300 ">{row.merchant}</td>
+                    <td className="px-4 py-3 text-ash-grey ">{row.merchant}</td>
                     <td className="px-4 py-3">
                       <Badge tone={statusTone[row.status]} dot>
                         {row.status}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-400 ">
+                    <td className="px-4 py-3 font-mono text-ash-grey ">
                       {row.aging}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap justify-end gap-2">
                         <button
                           onClick={() => hostInquiry(row.id)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 "
+                          className="inline-flex items-center gap-1.5 rounded-lg border-sand-wash bg-paper-white px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 "
                         >
                           <Search className="h-3.5 w-3.5" /> Host Inquiry
                         </button>
                         <button
                           onClick={() => redrive(row.id)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 "
+                          className="inline-flex items-center gap-1.5 rounded-lg border-sand-wash bg-paper-white px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 "
                         >
                           <RotateCw className="h-3.5 w-3.5" /> Redrive Reversal (0400)
                         </button>
                         <button
                           onClick={() => setForceTarget(row)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/20 "
+                          className="inline-flex items-center gap-1.5 rounded-lg border-emerald-green/30 bg-emerald-green/10 px-2.5 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-green/20 "
                         >
                           <RefreshCw className="h-3.5 w-3.5" /> Force Resolve
                         </button>
@@ -161,14 +161,14 @@ export default function UnresolvedQueue() {
         onClose={() => setForceTarget(null)}
         title={
           <span className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-amber-400 " />
+            <AlertTriangle className="h-4 w-4 text-brand-orange-tint " />
             Manual Force Resolve
           </span>
         }
       >
         {forceTarget && (
           <div className="space-y-4">
-            <p className="text-slate-400">
+            <p className="text-ash-grey">
               Resolving{" "}
               <span className="font-semibold text-slate-200 ">
                 {forceTarget?.amount} IQD
@@ -194,12 +194,12 @@ export default function UnresolvedQueue() {
               />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border-slate-800 bg-slate-950 px-4 py-3 ">
+            <div className="flex items-center justify-between rounded-xl bg-[rgba(247,59,32,0.04)] border-l-4 border-l-signal-orange px-4 py-3 ">
               <div>
                 <p className="text-sm font-medium text-slate-200 ">
                   Checker Approval Sign-off
                 </p>
-                <p className="text-slate-500">
+                <p className="text-ash-grey">
                   Maker proposes · Checker approves. Requires a second operator.
                 </p>
               </div>
@@ -207,7 +207,7 @@ export default function UnresolvedQueue() {
             </div>
 
             <div className="flex items-center justify-between gap-3 pt-1">
-              <p className="text-slate-500">
+              <p className="text-ash-grey">
                 <FileDown className="mr-1 inline h-3.5 w-3.5" />
                 Audit trail auto-appended to ticket
               </p>
@@ -218,7 +218,7 @@ export default function UnresolvedQueue() {
                 <button
                   onClick={() => setConfirmOpen(true)}
                   disabled={!checkerOk}
-                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-all duration-150 hover:bg-emerald-400 hover:brightness-110 active:scale-[0.98] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 "
+                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-green px-4 py-2 text-sm font-semibold text-ink-roast transition-all duration-150 hover:bg-emerald-green hover:brightness-110 active:scale-[0.98] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 "
                 >
                   <CheckCircle2 className="h-4 w-4" /> Confirm Resolve
                 </button>

@@ -31,7 +31,7 @@ export default function Home() {
     : personaTabs[persona][0];
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-100 font-sans text-slate-900 dark:bg-slate-950 dark:text-slate-200">
+    <div className="flex h-screen flex-col overflow-hidden bg-paper-white font-sans text-ink-roast">
       <Header
         persona={persona}
         onPersona={setPersona}

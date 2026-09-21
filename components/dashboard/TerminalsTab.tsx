@@ -46,7 +46,7 @@ export default function TerminalsTab() {
 
   return (
     <div className="space-y-5">
-      <div className="overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="Terminal Fleet & Drift Management"
           subtitle="Runtime parameter health vs authoritative baseline (v2.4)"
@@ -64,7 +64,7 @@ export default function TerminalsTab() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-sm ">
             <thead>
-              <tr className="border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 ">
+              <tr className="border-sand-wash text-[11px] uppercase tracking-wider text-ash-grey ">
                 <th className="px-4 py-3 font-medium">TID</th>
                 <th className="px-4 py-3 font-medium">Model</th>
                 <th className="px-4 py-3 font-medium">Merchant</th>
@@ -82,28 +82,28 @@ export default function TerminalsTab() {
                 return (
                   <tr
                     key={row.tid}
-                    className="border-slate-200 dark:border-slate-800/60 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40 "
+                    className="border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 "
                   >
-                    <td className="px-4 py-3 font-mono text-xs font-medium text-slate-900 dark:text-slate-100 ">
+                    <td className="px-4 py-3 font-mono text-xs font-medium text-ink-roast ">
                       {row.tid}
                     </td>
                     <td className="px-4 py-3">
                       <Badge tone={modelBadge[row.model]}>{row.model}</Badge>
                     </td>
-                    <td className="px-4 py-3 text-slate-700 dark:text-slate-300 ">{row.merchant}</td>
-                    <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300 ">
+                    <td className="px-4 py-3 text-ink-roast ">{row.merchant}</td>
+                    <td className="px-4 py-3 font-mono text-ink-roast ">
                       {row.appVer}
                     </td>
                     <td className="px-4 py-3 font-mono text-xs ">
                       <span
                         className={
-                          paramMismatch ? "text-amber-400" : "text-slate-700 dark:text-slate-300 "
+                          paramMismatch ? "text-brand-orange-tint" : "text-ink-roast "
                         }
                       >
                         {row.paramVer}
                       </span>
                       {paramMismatch && (
-                        <span className="ml-2 text-slate-500 dark:text-slate-400 ">
+                        <span className="ml-2 text-ash-grey ">
                           baseline v2.4
                         </span>
                       )}
@@ -113,7 +113,7 @@ export default function TerminalsTab() {
                         {row.drift}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-500 dark:text-slate-400 ">
+                    <td className="px-4 py-3 font-mono text-ash-grey ">
                       {row.lastPing}
                     </td>
                     <td className="px-4 py-3 text-right ">
@@ -121,7 +121,7 @@ export default function TerminalsTab() {
                         <button
                           onClick={() => triggerPush(row.tid)}
                           disabled={!paramMismatch}
-                          className="inline-flex items-center gap-1.5 rounded-lg border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-40 "
+                          className="inline-flex items-center gap-1.5 rounded-lg border-emerald-green/30 bg-emerald-green/10 px-2.5 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-green/20 disabled:cursor-not-allowed disabled:opacity-40 "
                         >
                           <Send className="h-3.5 w-3.5" /> Trigger Silent RPM Push
                         </button>
@@ -144,12 +144,12 @@ export default function TerminalsTab() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-5 py-4 ">
+      <div className="flex items-center justify-between rounded-2xl border-sand-wash bg-white px-5 py-4 ">
         <div>
-          <p className="text-sm font-medium text-slate-900 dark:text-slate-200 ">
+          <p className="text-sm font-medium text-ink-roast ">
             Silent RPM Auto-Push
           </p>
-          <p className="text-slate-500 dark:text-slate-400 ">
+          <p className="text-ash-grey ">
             Out-of-band heartbeat suppresses user-visible alert during push.
           </p>
         </div>

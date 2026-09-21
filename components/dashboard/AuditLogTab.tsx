@@ -133,29 +133,29 @@ export default function AuditLogTab() {
       label: "Total Events (24h)",
       value: totalEvents.toLocaleString("en-US"),
       icon: Activity,
-      tone: "text-sky-400",
-      bg: "bg-sky-500/10 ring-sky-500/20 ",
+      tone: "text-cobalt-blue",
+      bg: "bg-cobalt-blue/10 ring-cobalt-blue/20 ",
     },
     {
       label: "Critical Overrides",
       value: String(criticalOverrides),
       icon: Shield,
-      tone: "text-rose-400",
-      bg: "bg-rose-500/10 ring-rose-500/20 ",
+      tone: "text-coral-red",
+      bg: "bg-coral-red/10 ring-coral-red/20 ",
     },
     {
       label: "Active Admins",
       value: String(activeAdmins),
       icon: UserCog,
-      tone: "text-violet-400",
-      bg: "bg-violet-500/10 ring-violet-500/20 ",
+      tone: "text-signal-orange",
+      bg: "bg-signal-orange/10 ring-signal-orange/20 ",
     },
     {
       label: "Blocked Attempts",
       value: String(blockedAttempts),
       icon: Ban,
-      tone: "text-amber-400",
-      bg: "bg-amber-500/10 ring-amber-500/20 ",
+      tone: "text-brand-orange-tint",
+      bg: "bg-brand-orange-tint/10 ring-brand-orange-tint/20 ",
     },
   ];
 
@@ -168,10 +168,10 @@ export default function AuditLogTab() {
           return (
             <div
               key={s.label}
-              className={`rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 ${s.bg}`}
+              className={`rounded-2xl border-sand-wash bg-white p-5 ${s.bg}`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 ">{s.label}</p>
+                <p className="text-xs font-medium text-ash-grey ">{s.label}</p>
                 <Icon className={`h-4 w-4 ${s.tone}`} />
               </div>
               <p className={`mt-3 font-mono text-3xl font-semibold ${s.tone}`}>
@@ -183,7 +183,7 @@ export default function AuditLogTab() {
       </div>
 
       {/* Main audit trail */}
-      <div className="overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-slate-900 ">
+      <div className="overflow-hidden rounded-2xl border-sand-wash bg-paper-white ">
         <PanelTitle
           title="Immutable Audit Trail"
           subtitle="Every user and system modification across the portal, WORM-logged"
@@ -195,9 +195,9 @@ export default function AuditLogTab() {
         />
 
         {/* Filter toolbar */}
-        <div className="grid-cols-1 gap-3 border-slate-200 dark:border-slate-800 px-5 py-4 md:grid-cols-[1fr_220px_180px] ">
+        <div className="grid-cols-1 gap-3 border-sand-wash px-5 py-4 md:grid-cols-[1fr_220px_180px] ">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400 " />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ash-grey " />
             <input
               type="search"
               value={query}
@@ -208,7 +208,7 @@ export default function AuditLogTab() {
             />
           </div>
           <div className="relative">
-            <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400 " />
+            <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ash-grey " />
             <select
               value={actionFilter}
               onChange={(e) => setActionFilter(e.target.value as AuditActionType | "ALL")}
@@ -239,7 +239,7 @@ export default function AuditLogTab() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1200px] text-sm ">
             <thead>
-              <tr className="border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 ">
+              <tr className="border-sand-wash text-[11px] uppercase tracking-wider text-ash-grey ">
                 <th className="px-4 py-3 font-medium">Timestamp</th>
                 <th className="px-4 py-3 font-medium">Actor</th>
                 <th className="px-4 py-3 font-medium">Action</th>
@@ -254,7 +254,7 @@ export default function AuditLogTab() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-4 py-10 text-slate-500 dark:text-slate-400 "
+                    className="px-4 py-10 text-ash-grey "
                   >
                     No audit events match the current filter.
                   </td>
@@ -266,31 +266,31 @@ export default function AuditLogTab() {
                   return (
                     <tr
                       key={entry.id}
-                      className={`border-slate-200 dark:border-slate-800/60 transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40 ${
-                        isBlocked ? "bg-rose-500/5" : ""
+                      className={`border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 ${
+                        isBlocked ? "bg-coral-red/5" : ""
                       }`}
                     >
                       {/* Timestamp (microsecond precision) */}
                       <td className="px-4 py-3 align-top">
-                        <div className="font-mono text-xs font-semibold text-slate-900 dark:text-slate-200 ">
+                        <div className="font-mono text-xs font-semibold text-ink-roast ">
                           {ts.date}
                         </div>
-                        <div className="font-mono text-slate-500 dark:text-slate-400 ">
+                        <div className="font-mono text-ash-grey ">
                           {ts.time}
-                          <span className="text-slate-500 dark:text-slate-400 ">.{ts.micro}</span>
-                          <span className="ml-1 text-slate-500 dark:text-slate-400 ">Z</span>
+                          <span className="text-ash-grey ">.{ts.micro}</span>
+                          <span className="ml-1 text-ash-grey ">Z</span>
                         </div>
-                        <div className="mt-1 font-mono text-slate-600 ">
+                        <div className="mt-1 font-mono text-ink-roast/80 ">
                           {entry.id}
                         </div>
                       </td>
 
                       {/* Actor */}
                       <td className="px-4 py-3 align-top">
-                        <div className="font-medium text-slate-900 dark:text-slate-100 ">
+                        <div className="font-medium text-ink-roast ">
                           {entry.actor.name}
                         </div>
-                        <div className="mt-0.5 truncate font-mono text-slate-500 dark:text-slate-400 ">
+                        <div className="mt-0.5 truncate font-mono text-ash-grey ">
                           {entry.actor.email}
                         </div>
                         <div className="mt-1.5">
@@ -314,10 +314,10 @@ export default function AuditLogTab() {
 
                       {/* Target entity */}
                       <td className="px-4 py-3 align-top">
-                        <div className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400 ">
+                        <div className="text-xs font-medium uppercase tracking-wide text-ash-grey ">
                           {entry.targetType}
                         </div>
-                        <div className="mt-1 font-mono text-xs font-semibold text-slate-900 dark:text-slate-200 ">
+                        <div className="mt-1 font-mono text-xs font-semibold text-ink-roast ">
                           {entry.targetId}
                         </div>
                       </td>
@@ -327,7 +327,7 @@ export default function AuditLogTab() {
                         {entry.diff ? (
                           <div className="space-y-1.5">
                             <div className="flex items-start gap-2">
-                              <span className="mt-0.5 shrink-0 rounded bg-rose-500/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-rose-400 ring-rose-500/30 ">
+                              <span className="mt-0.5 shrink-0 rounded bg-coral-red/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-coral-red ring-coral-red/30 ">
                                 before
                               </span>
                               <span className="truncate font-mono text-rose-300/90 ">
@@ -335,7 +335,7 @@ export default function AuditLogTab() {
                               </span>
                             </div>
                             <div className="flex items-start gap-2">
-                              <span className="mt-0.5 shrink-0 rounded bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-emerald-400 ring-emerald-500/30 ">
+                              <span className="mt-0.5 shrink-0 rounded bg-emerald-green/10 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase text-emerald-green ring-emerald-green/30 ">
                                 after
                               </span>
                               <span className="truncate font-mono text-emerald-300/90 ">
@@ -344,7 +344,7 @@ export default function AuditLogTab() {
                             </div>
                           </div>
                         ) : (
-                          <span className="font-mono text-[11px] italic text-slate-500 dark:text-slate-400 ">
+                          <span className="font-mono text-[11px] italic text-ash-grey ">
                             (no mutation)
                           </span>
                         )}
@@ -352,7 +352,7 @@ export default function AuditLogTab() {
 
                       {/* IP & Channel */}
                       <td className="px-4 py-3 align-top">
-                        <div className="font-mono text-xs font-semibold text-slate-900 dark:text-slate-200 ">
+                        <div className="font-mono text-xs font-semibold text-ink-roast ">
                           {entry.ipAddress}
                         </div>
                         <div className="mt-1.5">
