@@ -14,12 +14,14 @@ import {
   Network,
   Play,
   Plug,
+  Pencil,
   Plus,
   Rocket,
   Route,
   Server,
   Send,
   ShieldCheck,
+  Trash2,
   Upload,
   Wifi,
   Workflow,
@@ -126,7 +128,17 @@ function PillButton({
   );
 }
 
-function RuleCard({ rule }: { rule: RoutingRule }) {
+function RuleCard({
+  rule,
+  isEditing,
+  onEdit,
+  onDelete,
+}: {
+  rule: RoutingRule;
+  isEditing?: boolean;
+  onEdit?: (rule: RoutingRule) => void;
+  onDelete?: (ruleId: string) => void;
+}) {
   const hasThreshold =
     typeof rule.amountThresholdIqd === "number" && rule.amountThresholdIqd > 0;
 
@@ -138,9 +150,43 @@ function RuleCard({ rule }: { rule: RoutingRule }) {
     : "";
 
   return (
-    <div className="rounded-2xl border-sand-wash bg-white p-5">
+    <div
+      className={`rounded-2xl border bg-white p-5 transition ${
+        isEditing
+          ? "border-signal-orange/50 ring-2 ring-signal-orange/20"
+          : "border-sand-wash"
+      }`}
+    >
       <div className="flex items-center justify-between gap-3">
-        <Badge tone={rule.tone}>{rule.id}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge tone={rule.tone}>{rule.id}</Badge>
+          {onEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit(rule)}
+              title={isEditing ? "Editing this rule" : `Edit ${rule.id}`}
+              className={`inline-flex items-center px-2 py-0.5 rounded-[8px] text-[11px] font-medium border transition-colors ${
+                isEditing
+                  ? "border-signal-orange/60 text-signal-orange bg-sand-wash/40"
+                  : "border-sand-wash text-ash-grey hover:text-signal-orange hover:border-signal-orange/40 hover:bg-sand-wash/20"
+              }`}
+            >
+              <Pencil className="h-3 w-3 mr-1" />
+              {isEditing ? "Editing…" : "Edit"}
+            </button>
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(rule.id)}
+              title={`Delete ${rule.id}`}
+              className="inline-flex items-center px-2 py-0.5 rounded-[8px] text-[11px] font-medium border border-sand-wash text-ash-grey transition-colors hover:text-coral-red hover:border-coral-red/40 hover:bg-coral-red/10"
+            >
+              <Trash2 className="h-3 w-3 mr-1" />
+              Delete
+            </button>
+          )}
+        </div>
         <span className="text-[10px] font-medium uppercase tracking-wider text-ash-grey">
           {rule.category}
         </span>
@@ -512,6 +558,7 @@ export default function RulesTab() {
   const [dryRun, setDryRun] = useState(false);
   const [integrationOpen, setIntegrationOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
 
   const selectedDestination =
     destinationHosts.find((h) => h.id === destinationId) ??
@@ -580,6 +627,94 @@ export default function RulesTab() {
     void specLabel;
   }
 
+  function handleStartEdit(rule: RoutingRule) {
+    setEditingRuleId(rule.id);
+    // Hydrate all builder fields from the rule
+    setCategory(rule.category);
+    setTxType(rule.transactionType ?? "0200 - Sale / Purchase");
+    setVasStage(rule.vasStage ?? "Synchronous In-Flight (Pre-Host)");
+    setDccEnabled(Boolean(rule.dccProvider));
+    setDccProvider(rule.dccProvider ?? "QiCard DCC Middleware");
+    setInstitution(rule.sourceInstitution);
+    setChannel(rule.sourceChannel);
+    const hasAmount = typeof rule.amountThresholdIqd === "number" && rule.amountThresholdIqd > 0;
+    setUseThreshold(hasAmount);
+    setThreshold(
+      hasAmount
+        ? rule.amountThresholdIqd!.toLocaleString("en-US")
+        : "1,000,000"
+    );
+    // Auto-populate destination grid, socket, TLS, and mediation badges
+    const options = destinationOptionsFor(rule.category);
+    const seed = options.find((d) => d.id === rule.destinationId) ?? options[0];
+    setDestinationId(seed.id);
+    setHostName(seed.hostName);
+    setHostIp(seed.hostIp);
+    setHostPort(seed.hostPort);
+    setTlsMode(seed.tlsMode);
+    setCertName(seed.certName);
+    setOutboundProtocol(seed.outboundProtocol);
+    setMediationType(seed.mediationType);
+    // Smooth-scroll to the builder so the operator reviews step 1 first
+    requestAnimationFrame(() => {
+      document
+        .getElementById("rule-builder-section")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function handleSaveEdit() {
+    if (!editingRuleId) return;
+    const parsedPort = Number(hostPort);
+    const parsedThreshold = Number(threshold.replace(/[^0-9.]/g, ""));
+    const targetId = editingRuleId;
+    setRules((prev) =>
+      prev.map((r) =>
+        r.id === targetId
+          ? {
+              ...r,
+              name: `${institution} / ${channel} / ${selectedDestination.label}`,
+              category,
+              sourceInstitution: institution,
+              sourceChannel: channel,
+              transactionType: category === "Transaction Route" ? txType : undefined,
+              vasStage: category === "VAS Service Route" ? vasStage : undefined,
+              useThreshold,
+              amountThresholdIqd:
+                useThreshold && Number.isFinite(parsedThreshold) ? parsedThreshold : undefined,
+              dccEnabled,
+              dccProvider: dccEnabled ? dccProvider : undefined,
+              destinationId,
+              hostName: hostName || selectedDestination.hostName,
+              hostIp: hostIp || selectedDestination.hostIp,
+              hostPort: Number.isFinite(parsedPort) && parsedPort > 0 ? parsedPort : 7010,
+              destProtocol: outboundProtocol,
+              tlsMode,
+              certName: tlsMode === "None / TCP Direct" ? "" : certName,
+              mediationType,
+              tone: category === "Transaction Route" ? "emerald" : "amber",
+              updatedAt: "just now",
+            }
+          : r
+      )
+    );
+    setToast(`Rule ${targetId} updated in Orchestration Core`);
+    setEditingRuleId(null);
+  }
+
+  function handleCancelEdit() {
+    setEditingRuleId(null);
+  }
+
+  const handleDeleteRule = (ruleId: string) => {
+    setRules((prevRules) => prevRules.filter((r) => r.id !== ruleId));
+    if (editingRuleId === ruleId) {
+      handleCancelEdit();
+    }
+    setToast(`✓ Rule ${ruleId} decommissioned and removed from routing deck.`);
+    setTimeout(() => setToast(null), 3500);
+  };
+
   return (
     <div className="space-y-5">
       <div>
@@ -596,9 +731,15 @@ export default function RulesTab() {
             {rules.length} rules live
           </Badge>
         </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div id="rule-builder-section" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {rules.map((r) => (
-            <RuleCard key={r.id} rule={r} />
+            <RuleCard
+              key={r.id}
+              rule={r}
+              isEditing={editingRuleId === r.id}
+              onEdit={handleStartEdit}
+              onDelete={handleDeleteRule}
+            />
           ))}
         </div>
       </div>
@@ -846,18 +987,33 @@ export default function RulesTab() {
               {dccEnabled ? ` [DCC: ${dccProvider}]` : ""} ──► {hostName} ({hostIp}:{hostPort}) · JSON ──► {mediationType}
             </p>
             <div className="flex flex-wrap items-center gap-2">
-              <ButtonGhost onClick={() => setDryRun(true)}>
-                <Play className="h-4 w-4" />
-                Dry-Run Simulation
-              </ButtonGhost>
-              <ButtonGhost onClick={() => setIntegrationOpen(true)}>
-                <Plus className="h-4 w-4" />
-                Request New Destination Integration
-              </ButtonGhost>
-              <ButtonPrimary onClick={saveRule}>
-                <Rocket className="h-4 w-4" />
-                Save & Deploy Rule
-              </ButtonPrimary>
+              {editingRuleId ? (
+                <>
+                  <ButtonGhost onClick={handleCancelEdit}>
+                    <Wifi className="h-4 w-4" />
+                    Cancel Edit
+                  </ButtonGhost>
+                  <ButtonPrimary onClick={handleSaveEdit}>
+                    <Rocket className="h-4 w-4" />
+                    Confirm Changes to {editingRuleId}
+                  </ButtonPrimary>
+                </>
+              ) : (
+                <>
+                  <ButtonGhost onClick={() => setDryRun(true)}>
+                    <Play className="h-4 w-4" />
+                    Dry-Run Simulation
+                  </ButtonGhost>
+                  <ButtonGhost onClick={() => setIntegrationOpen(true)}>
+                    <Plus className="h-4 w-4" />
+                    Request New Destination Integration
+                  </ButtonGhost>
+                  <ButtonPrimary onClick={saveRule}>
+                    <Rocket className="h-4 w-4" />
+                    Save & Deploy Rule
+                  </ButtonPrimary>
+                </>
+              )}
             </div>
           </div>
         </div>
