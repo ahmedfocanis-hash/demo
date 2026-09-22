@@ -12,7 +12,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { stuckRows, type StuckRow, type StuckStatus } from "./data";
+import { filterByBank, stuckRows, type AcquirerBank, type StuckRow, type StuckStatus } from "./data";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import {
   Badge,
@@ -45,8 +45,8 @@ const statusFilterOptions = [
 
 type StatusFilter = "All Statuses" | StuckStatus;
 
-export default function UnresolvedQueue() {
-  const [rows, setRows] = useState<StuckRow[]>(stuckRows);
+export default function UnresolvedQueue({ bank }: { bank: AcquirerBank }) {
+  const [rows, setRows] = useState<StuckRow[]>(() => filterByBank(stuckRows, bank));
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All Statuses");
   const [actionToast, setActionToast] = useState<string | null>(null);

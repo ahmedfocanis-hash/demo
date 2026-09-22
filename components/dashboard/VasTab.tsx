@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Activity,
   Gauge,
@@ -7,8 +8,10 @@ import {
   Wallet,
 } from "lucide-react";
 import {
+  filterByBank,
   vasCatalogData,
   vasTransactionsData,
+  type AcquirerBank,
   type VasCategory,
   type VasService,
   type VasTransaction,
@@ -65,12 +68,16 @@ const fmtAmount = (amount: number, currency: "IQD" | "USD") =>
     ? `$${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     : `${amount.toLocaleString("en-US")} IQD`;
 
-export default function VasTab() {
-  const totalVolume = vasCatalogData.reduce((s, v) => s + v.dailyVolumeIqd, 0);
-  const totalTx = vasCatalogData.reduce((s, v) => s + v.txCount24h, 0);
+export default function VasTab({ bank }: { bank: AcquirerBank }) {
+  const catalogRows = useMemo(() => filterByBank(vasCatalogData, bank), [bank]);
+  const txRows = useMemo(() => filterByBank(vasTransactionsData, bank), [bank]);
+  const totalVolume = catalogRows.reduce((s, v) => s + v.dailyVolumeIqd, 0);
+  const totalTx = catalogRows.reduce((s, v) => s + v.txCount24h, 0);
   const avgSuccess =
-    vasCatalogData.reduce((s, v) => s + v.successRate, 0) / vasCatalogData.length;
-  const activeProviders = vasCatalogData.filter((v) => v.status === "ACTIVE").length;
+    catalogRows.length > 0
+      ? Math.round(catalogRows.reduce((s, v) => s + v.successRate, 0) / catalogRows.length)
+      : 0;
+  const activeProviders = catalogRows.filter((v) => v.status === "ACTIVE").length;
 
   const summary = [
     {
@@ -131,7 +138,7 @@ export default function VasTab() {
         <PanelTitle
           title="VAS Provider Catalog"
           subtitle="Billers, switches & commission schedules"
-          right={<Badge tone="blue">{vasCatalogData.length} Services</Badge>}
+          right={<Badge tone="blue">{catalogRows.length} Services</Badge>}
         />
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1000px] text-sm ">
@@ -148,7 +155,7 @@ export default function VasTab() {
               </tr>
             </thead>
             <tbody>
-              {vasCatalogData.map((svc) => (
+              {catalogRows.map((svc) => (
                 <tr
                   key={svc.id}
                   className="border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 "
@@ -234,7 +241,7 @@ export default function VasTab() {
               </tr>
             </thead>
             <tbody>
-              {vasTransactionsData.map((tx) => (
+              {txRows.map((tx) => (
                 <tr
                   key={tx.id}
                   className="border-sand-wash transition hover:bg-paper-white/80:bg-slate-800/40 "

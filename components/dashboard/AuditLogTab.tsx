@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import {
   auditLogsData,
+  filterByBank,
+  type AcquirerBank,
   type AuditActionType,
   type AuditActorRole,
   type AuditSeverity,
@@ -86,14 +88,15 @@ const SEVERITY_OPTIONS: (AuditSeverity | "ALL")[] = ["ALL", "INFO", "WARNING", "
 
 /* --------------------------------- Component --------------------------------- */
 
-export default function AuditLogTab() {
+export default function AuditLogTab({ bank }: { bank: AcquirerBank }) {
+  const scopedLogs = useMemo(() => filterByBank(auditLogsData, bank), [bank]);
   const [query, setQuery] = useState("");
   const [actionFilter, setActionFilter] = useState<AuditActionType | "ALL">("ALL");
   const [severityFilter, setSeverityFilter] = useState<AuditSeverity | "ALL">("ALL");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return auditLogsData.filter((entry) => {
+    return scopedLogs.filter((entry) => {
       if (actionFilter !== "ALL" && entry.action !== actionFilter) return false;
       if (severityFilter !== "ALL" && entry.severity !== severityFilter) return false;
       if (!q) return true;
@@ -114,19 +117,19 @@ export default function AuditLogTab() {
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [query, actionFilter, severityFilter]);
+  }, [query, actionFilter, severityFilter, scopedLogs]);
 
   /* KPI metrics (24h snapshot from the mock stream) */
-  const totalEvents = auditLogsData.length * 214; // realistic 24h volume extrapolation
-  const criticalOverrides = auditLogsData.filter(
+  const totalEvents = scopedLogs.length * 214; // realistic 24h volume extrapolation
+  const criticalOverrides = scopedLogs.filter(
     (e) => e.action === "CONFIG_OVERRIDE" && e.severity === "CRITICAL",
   ).length;
   const activeAdmins = new Set(
-    auditLogsData
+    scopedLogs
       .filter((e) => e.actor.role === "Platform Admin")
       .map((e) => e.actor.email),
   ).size;
-  const blockedAttempts = auditLogsData.filter((e) => e.status === "BLOCKED").length;
+  const blockedAttempts = scopedLogs.filter((e) => e.status === "BLOCKED").length;
 
   const summary = [
     {
@@ -189,7 +192,7 @@ export default function AuditLogTab() {
           subtitle="Every user and system modification across the portal, WORM-logged"
           right={
             <Badge tone="neutral" dot pulse>
-              {filtered.length} / {auditLogsData.length} events
+              {filtered.length} / {scopedLogs.length} events
             </Badge>
           }
         />

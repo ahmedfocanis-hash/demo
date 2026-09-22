@@ -1,4 +1,63 @@
-export type Persona = "acquirer" | "psp" | "merchant";
+export type Persona = "acquirer" | "merchant";
+
+/* -------------------------- Acquirer bank scope --------------------------- */
+
+/**
+ * Consortium member acquirer banks. `"ALL"` is the union view — the
+ * operational surface shown when no specific bank is scoped.
+ */
+export type AcquirerBank = "ALL" | "QiCard" | "Al Qaseh" | "Tabadul" | "Nass" | "Amwal";
+
+export const ACQUIRER_BANKS: { id: AcquirerBank; name: string; code: string }[] = [
+  { id: "ALL", name: "All Acquirers (Consortium View)", code: "ALL" },
+  { id: "QiCard", name: "QiCard (ISC)", code: "QIC" },
+  { id: "Al Qaseh", name: "Al Qaseh Islamic Bank", code: "QSH" },
+  { id: "Tabadul", name: "Tabadul Payment Switch", code: "TBD" },
+  { id: "Nass", name: "Nass Iraq Payment Network", code: "NSS" },
+  { id: "Amwal", name: "Amwal Electronic Banking", code: "AMW" },
+];
+
+/** Member banks only — no "ALL" aggregate. */
+export const ACQUIRER_BANK_MEMBERS: AcquirerBank[] = [
+  "QiCard",
+  "Al Qaseh",
+  "Tabadul",
+  "Nass",
+  "Amwal",
+];
+
+/** Convenience label lookup. */
+export const acquirerBankLabel = (bank: AcquirerBank): string =>
+  ACQUIRER_BANKS.find((b) => b.id === bank)?.name ?? bank;
+
+export function filterByBank<T extends { bank: AcquirerBank }>(
+  rows: T[],
+  bank: AcquirerBank,
+): T[] {
+  if (bank === "ALL") return rows;
+  return rows.filter((r) => r.bank === bank);
+}
+
+export function acquirerBankShortLabel(bank: AcquirerBank): string {
+  switch (bank) {
+    case "ALL":
+      return "All Banks";
+    case "QiCard":
+      return "QiCard";
+    case "Al Qaseh":
+      return "Al Qaseh";
+    case "Tabadul":
+      return "Tabadul";
+    case "Nass":
+      return "Nass";
+    case "Amwal":
+      return "Amwal";
+    default:
+      return bank;
+  }
+}
+
+/* ------------------------------ Tx dataset -------------------------------- */
 
 export type Channel = "POS" | "SoftPOS" | "QR";
 
@@ -14,6 +73,7 @@ export interface TxRow {
   type: "SALE" | "PRE_AUTH" | "COMPLETION";
   response: "00 Approved" | "51 Insufficient Funds" | "91 Timeout";
   tone: "green" | "red" | "amber";
+  bank: AcquirerBank;
 }
 
 export const txRows: TxRow[] = [
@@ -29,6 +89,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "QiCard",
   },
   {
     id: "tx-02",
@@ -42,6 +103,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "51 Insufficient Funds",
     tone: "red",
+    bank: "Al Qaseh",
   },
   {
     id: "tx-03",
@@ -55,6 +117,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "Tabadul",
   },
   {
     id: "tx-04",
@@ -68,6 +131,7 @@ export const txRows: TxRow[] = [
     type: "PRE_AUTH",
     response: "00 Approved",
     tone: "green",
+    bank: "Nass",
   },
   {
     id: "tx-05",
@@ -81,6 +145,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "91 Timeout",
     tone: "amber",
+    bank: "Amwal",
   },
   {
     id: "tx-06",
@@ -94,6 +159,7 @@ export const txRows: TxRow[] = [
     type: "COMPLETION",
     response: "00 Approved",
     tone: "green",
+    bank: "QiCard",
   },
   {
     id: "tx-07",
@@ -107,6 +173,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "Al Qaseh",
   },
   {
     id: "tx-08",
@@ -120,6 +187,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "Tabadul",
   },
   {
     id: "tx-09",
@@ -133,6 +201,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "Nass",
   },
   {
     id: "tx-10",
@@ -146,6 +215,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "Amwal",
   },
   {
     id: "tx-11",
@@ -159,6 +229,7 @@ export const txRows: TxRow[] = [
     type: "PRE_AUTH",
     response: "00 Approved",
     tone: "green",
+    bank: "QiCard",
   },
   {
     id: "tx-12",
@@ -172,6 +243,7 @@ export const txRows: TxRow[] = [
     type: "SALE",
     response: "00 Approved",
     tone: "green",
+    bank: "Al Qaseh",
   },
   {
     id: "tx-13",
@@ -185,6 +257,7 @@ export const txRows: TxRow[] = [
     type: "COMPLETION",
     response: "00 Approved",
     tone: "green",
+    bank: "Tabadul",
   },
 ];
 
@@ -262,6 +335,7 @@ export interface StuckRow {
   tone: "red" | "amber" | "blue";
   time: string;
   merchant: string;
+  bank: AcquirerBank;
 }
 
 /* Deterministic 55-record queue — Iraqi & regional retail estate. */
@@ -398,6 +472,7 @@ export const stuckRows: StuckRow[] = SQ_SEEDS.map((seed, i) => {
     tone: status.tone,
     aging: agingLabel,
     time: sqTimeOffset(agingMinutes),
+    bank: ACQUIRER_BANK_MEMBERS[i % ACQUIRER_BANK_MEMBERS.length],
   };
 });
 
@@ -411,6 +486,7 @@ export interface TerminalRow {
   paramVer: string;
   drift: "In Sync" | "Drift Detected";
   lastPing: string;
+  bank: AcquirerBank;
 }
 
 export const terminals: TerminalRow[] = [
@@ -422,6 +498,7 @@ export const terminals: TerminalRow[] = [
     paramVer: "v2.1",
     drift: "Drift Detected",
     lastPing: "2s ago",
+    bank: "QiCard",
   },
   {
     tid: "TID-10493",
@@ -431,6 +508,7 @@ export const terminals: TerminalRow[] = [
     paramVer: "v2.4",
     drift: "In Sync",
     lastPing: "9s ago",
+    bank: "Al Qaseh",
   },
   {
     tid: "TID-10501",
@@ -440,6 +518,7 @@ export const terminals: TerminalRow[] = [
     paramVer: "v2.4",
     drift: "In Sync",
     lastPing: "31s ago",
+    bank: "Tabadul",
   },
   {
     tid: "TID-10512",
@@ -449,6 +528,7 @@ export const terminals: TerminalRow[] = [
     paramVer: "v2.1",
     drift: "Drift Detected",
     lastPing: "1m ago",
+    bank: "Nass",
   },
   {
     tid: "TID-10520",
@@ -458,6 +538,7 @@ export const terminals: TerminalRow[] = [
     paramVer: "v2.4",
     drift: "In Sync",
     lastPing: "4s ago",
+    bank: "Amwal",
   },
 ];
 
@@ -471,6 +552,7 @@ export interface BatchRow {
   status: "ACK_RECEIVED" | "TRANSMITTED" | "NACK_REJECTED";
   timestamp: string;
   rev?: string;
+  bank: AcquirerBank;
 }
 
 export const batches: BatchRow[] = [
@@ -481,6 +563,7 @@ export const batches: BatchRow[] = [
     transport: "SFTP",
     status: "ACK_RECEIVED",
     timestamp: "03:15:02",
+    bank: "QiCard",
   },
   {
     id: "STL-88214",
@@ -489,6 +572,7 @@ export const batches: BatchRow[] = [
     transport: "API Push",
     status: "ACK_RECEIVED",
     timestamp: "03:15:09",
+    bank: "Al Qaseh",
   },
   {
     id: "STL-88215",
@@ -498,6 +582,7 @@ export const batches: BatchRow[] = [
     status: "TRANSMITTED",
     timestamp: "03:15:14",
     rev: "REV-2",
+    bank: "Tabadul",
   },
   {
     id: "STL-88216",
@@ -506,6 +591,7 @@ export const batches: BatchRow[] = [
     transport: "API Push",
     status: "ACK_RECEIVED",
     timestamp: "03:15:21",
+    bank: "Nass",
   },
   {
     id: "STL-88217",
@@ -514,6 +600,7 @@ export const batches: BatchRow[] = [
     transport: "API Push",
     status: "NACK_REJECTED",
     timestamp: "03:15:27",
+    bank: "Amwal",
   },
   {
     id: "STL-88218",
@@ -522,6 +609,7 @@ export const batches: BatchRow[] = [
     transport: "SFTP",
     status: "ACK_RECEIVED",
     timestamp: "03:15:33",
+    bank: "QiCard",
   },
   {
     id: "STL-88219",
@@ -530,6 +618,7 @@ export const batches: BatchRow[] = [
     transport: "API Push",
     status: "ACK_RECEIVED",
     timestamp: "03:15:40",
+    bank: "Al Qaseh",
   },
   {
     id: "STL-88220",
@@ -538,6 +627,7 @@ export const batches: BatchRow[] = [
     transport: "SFTP",
     status: "ACK_RECEIVED",
     timestamp: "03:15:46",
+    bank: "Tabadul",
   },
 ];
 
@@ -573,6 +663,7 @@ export interface VasService {
   dailyVolumeIqd: number;
   txCount24h: number;
   supportedChannels: ("POS" | "SoftPOS" | "QR" | "PORTAL")[];
+  bank: AcquirerBank;
 }
 
 export interface VasTransaction {
@@ -590,6 +681,7 @@ export interface VasTransaction {
   currency: "IQD" | "USD";
   status: "00 Approved" | "91 Switch Timeout" | "51 Invalid Biller" | "05 Declined";
   channel: "POS" | "SoftPOS" | "QR";
+  bank: AcquirerBank;
 }
 
 export const vasCatalogData: VasService[] = [
@@ -606,6 +698,7 @@ export const vasCatalogData: VasService[] = [
     dailyVolumeIqd: 45_200_000,
     txCount24h: 3120,
     supportedChannels: ["POS", "SoftPOS", "QR"],
+    bank: "QiCard",
   },
   {
     id: "vas-02",
@@ -620,6 +713,7 @@ export const vasCatalogData: VasService[] = [
     dailyVolumeIqd: 62_800_000,
     txCount24h: 4410,
     supportedChannels: ["POS", "SoftPOS", "QR"],
+    bank: "Al Qaseh",
   },
   {
     id: "vas-03",
@@ -634,6 +728,7 @@ export const vasCatalogData: VasService[] = [
     dailyVolumeIqd: 28_400_000,
     txCount24h: 890,
     supportedChannels: ["POS", "PORTAL"],
+    bank: "Tabadul",
   },
   {
     id: "vas-04",
@@ -648,6 +743,7 @@ export const vasCatalogData: VasService[] = [
     dailyVolumeIqd: 118_500_000,
     txCount24h: 640,
     supportedChannels: ["POS", "SoftPOS"],
+    bank: "Nass",
   },
   {
     id: "vas-05",
@@ -662,6 +758,7 @@ export const vasCatalogData: VasService[] = [
     dailyVolumeIqd: 8_150_000,
     txCount24h: 410,
     supportedChannels: ["POS"],
+    bank: "Amwal",
   },
   {
     id: "vas-06",
@@ -676,6 +773,7 @@ export const vasCatalogData: VasService[] = [
     dailyVolumeIqd: 14_900_000,
     txCount24h: 530,
     supportedChannels: ["POS", "PORTAL"],
+    bank: "QiCard",
   },
 ];
 
@@ -695,6 +793,7 @@ export const vasTransactionsData: VasTransaction[] = [
     currency: "IQD",
     status: "00 Approved",
     channel: "POS",
+    bank: "QiCard",
   },
   {
     id: "vas-tx-102",
@@ -711,6 +810,7 @@ export const vasTransactionsData: VasTransaction[] = [
     currency: "IQD",
     status: "00 Approved",
     channel: "POS",
+    bank: "Al Qaseh",
   },
   {
     id: "vas-tx-103",
@@ -727,6 +827,7 @@ export const vasTransactionsData: VasTransaction[] = [
     currency: "USD",
     status: "00 Approved",
     channel: "POS",
+    bank: "Nass",
   },
   {
     id: "vas-tx-104",
@@ -743,6 +844,7 @@ export const vasTransactionsData: VasTransaction[] = [
     currency: "IQD",
     status: "91 Switch Timeout",
     channel: "SoftPOS",
+    bank: "Amwal",
   },
 ];
 
@@ -798,6 +900,8 @@ export interface AuditLogEntry {
   ipAddress: string;
   channel: "PORTAL" | "API" | "SYSTEM" | "VPN";
   status: "SUCCESS" | "BLOCKED";
+  /** Consortium bank the audit event is scoped to. */
+  bank: AcquirerBank;
 }
 
 export const auditLogsData: AuditLogEntry[] = [
@@ -820,6 +924,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "10.20.4.117",
     channel: "PORTAL",
     status: "SUCCESS",
+    bank: "QiCard",
   },
   {
     id: "aud-90230",
@@ -840,6 +945,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "169.254.0.9",
     channel: "SYSTEM",
     status: "SUCCESS",
+    bank: "Al Qaseh",
   },
   {
     id: "aud-90229",
@@ -860,6 +966,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "172.18.22.54",
     channel: "PORTAL",
     status: "SUCCESS",
+    bank: "Tabadul",
   },
   {
     id: "aud-90228",
@@ -877,6 +984,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "185.77.103.22",
     channel: "VPN",
     status: "BLOCKED",
+    bank: "Nass",
   },
   {
     id: "aud-90227",
@@ -897,6 +1005,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "10.20.9.31",
     channel: "PORTAL",
     status: "SUCCESS",
+    bank: "Amwal",
   },
   {
     id: "aud-90226",
@@ -917,6 +1026,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "172.18.30.8",
     channel: "PORTAL",
     status: "SUCCESS",
+    bank: "QiCard",
   },
   {
     id: "aud-90225",
@@ -937,6 +1047,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "10.20.4.117",
     channel: "PORTAL",
     status: "SUCCESS",
+    bank: "Al Qaseh",
   },
   {
     id: "aud-90224",
@@ -954,6 +1065,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "169.254.0.4",
     channel: "API",
     status: "SUCCESS",
+    bank: "Tabadul",
   },
   {
     id: "aud-90223",
@@ -974,6 +1086,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "172.18.22.54",
     channel: "PORTAL",
     status: "SUCCESS",
+    bank: "Nass",
   },
   {
     id: "aud-90222",
@@ -991,6 +1104,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "185.77.103.22",
     channel: "API",
     status: "BLOCKED",
+    bank: "Amwal",
   },
   {
     id: "aud-90221",
@@ -1011,6 +1125,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "169.254.0.9",
     channel: "SYSTEM",
     status: "SUCCESS",
+    bank: "QiCard",
   },
   {
     id: "aud-90220",
@@ -1028,6 +1143,7 @@ export const auditLogsData: AuditLogEntry[] = [
     ipAddress: "10.20.4.117",
     channel: "VPN",
     status: "SUCCESS",
+    bank: "Al Qaseh",
   },
 ];
 
@@ -1113,6 +1229,8 @@ export interface RoutingRule {
   name: string;
   category: RuleCategory;
   sourceInstitution: SourceInstitution;
+  /** Scoping bank — which consortium member this rule belongs to. */
+  bank: AcquirerBank;
   sourceChannel: SourceChannel;
   transactionType?: TransactionType;
   vasStage?: VasStage;
@@ -1363,6 +1481,7 @@ export const routingRules: RoutingRule[] = [
     name: "QiCard / POS / TSYS / DCC",
     category: "Transaction Route",
     sourceInstitution: "QiCard",
+    bank: "QiCard",
     sourceChannel: "POS Terminal",
     transactionType: "0200 - Sale / Purchase",
     useThreshold: false,
@@ -1386,6 +1505,7 @@ export const routingRules: RoutingRule[] = [
     name: "Al-Taif / SoftPOS / S2M",
     category: "Transaction Route",
     sourceInstitution: "Al-Taif",
+    bank: "Al Qaseh",
     sourceChannel: "SoftPOS",
     transactionType: "0100 - Pre-Authorization",
     useThreshold: false,
@@ -1408,6 +1528,7 @@ export const routingRules: RoutingRule[] = [
     name: "EBE / QR / Bill Payment",
     category: "VAS Service Route",
     sourceInstitution: "EBE National",
+    bank: "Tabadul",
     sourceChannel: "QR Dynamic",
     vasStage: "Bill Presentment Inquiry",
     useThreshold: false,
@@ -1430,6 +1551,7 @@ export const routingRules: RoutingRule[] = [
     name: "CBI / E-Commerce / Tasdeed",
     category: "VAS Service Route",
     sourceInstitution: "CBI",
+    bank: "Nass",
     sourceChannel: "E-Commerce Ingress",
     vasStage: "Synchronous In-Flight (Pre-Host)",
     useThreshold: true,
@@ -1453,6 +1575,7 @@ export const routingRules: RoutingRule[] = [
     name: "CBI / SoftPOS / Aqsaty Reward",
     category: "VAS Service Route",
     sourceInstitution: "CBI",
+    bank: "Amwal",
     sourceChannel: "SoftPOS",
     vasStage: "Post-Authorization Reward",
     useThreshold: false,
@@ -1475,6 +1598,7 @@ export const routingRules: RoutingRule[] = [
     name: "EBE / QR / BPC Direct",
     category: "Transaction Route",
     sourceInstitution: "EBE National",
+    bank: "QiCard",
     sourceChannel: "QR Dynamic",
     transactionType: "0200 - Sale / Purchase",
     useThreshold: true,
@@ -1498,6 +1622,7 @@ export const routingRules: RoutingRule[] = [
     name: "Al-Taif / E-Commerce / CBI EBPP",
     category: "VAS Service Route",
     sourceInstitution: "Al-Taif",
+    bank: "Al Qaseh",
     sourceChannel: "E-Commerce Ingress",
     vasStage: "Bill Presentment Inquiry",
     useThreshold: false,
@@ -1520,6 +1645,7 @@ export const routingRules: RoutingRule[] = [
     name: "QiCard / SoftPOS / Leuonova",
     category: "VAS Service Route",
     sourceInstitution: "QiCard",
+    bank: "Tabadul",
     sourceChannel: "SoftPOS",
     vasStage: "Synchronous In-Flight (Pre-Host)",
     useThreshold: false,
@@ -1542,6 +1668,7 @@ export const routingRules: RoutingRule[] = [
     name: "QiCard / POS / OpenWay Reversal",
     category: "Transaction Route",
     sourceInstitution: "QiCard",
+    bank: "Nass",
     sourceChannel: "POS Terminal",
     transactionType: "0400 - Reversal",
     useThreshold: false,

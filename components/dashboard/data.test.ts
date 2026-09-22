@@ -98,8 +98,7 @@ describe("personaTabs", () => {
     for (const id of ALL_TAB_IDS) expect(personaTabs.acquirer).toContain(id);
   });
 
-  it("psp and merchant are strict subsets of acquirer", () => {
-    for (const id of personaTabs.psp) expect(personaTabs.acquirer).toContain(id);
+  it("merchant is a strict subset of acquirer", () => {
     for (const id of personaTabs.merchant) expect(personaTabs.acquirer).toContain(id);
   });
 });

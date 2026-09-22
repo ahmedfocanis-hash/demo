@@ -11,7 +11,7 @@ import TerminalsTab from "@/components/dashboard/TerminalsTab";
 import SettlementTab from "@/components/dashboard/SettlementTab";
 import VasTab from "@/components/dashboard/VasTab";
 import AuditLogTab from "@/components/dashboard/AuditLogTab";
-import type { Persona } from "@/components/dashboard/data";
+import type { AcquirerBank, Persona } from "@/components/dashboard/data";
 import CommandPalette from "@/components/ui/CommandPalette";
 import CookieBanner from "@/components/ui/CookieBanner";
 import SupportPanel from "@/components/ui/SupportPanel";
@@ -21,6 +21,7 @@ import ScrollTopButton from "@/components/ui/ScrollTopButton";
 export default function Home() {
   const [active, setActive] = useState<TabId>("transactions");
   const [persona, setPersona] = useState<Persona>("acquirer");
+  const [selectedBank, setSelectedBank] = useState<AcquirerBank>("ALL");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Fallback guard: if the active tab isn't permitted for the current
@@ -32,11 +33,15 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-paper-white font-sans text-ink-roast">
-      <Header
-        persona={persona}
-        onPersona={setPersona}
-        onToggleMobileMenu={() => setMobileMenuOpen((prev) => !prev)}
-      />
+      <div className="relative z-20 shrink-0">
+        <Header
+          persona={persona}
+          onPersona={setPersona}
+          onToggleMobileMenu={() => setMobileMenuOpen((prev) => !prev)}
+          selectedBank={selectedBank}
+          onSelectBank={setSelectedBank}
+        />
+      </div>
       <div className="flex w-full flex-1 overflow-hidden">
         <Sidebar
           active={effectiveTab}
@@ -47,15 +52,21 @@ export default function Home() {
         />
         <main className="w-full min-w-0 flex-1 overflow-y-auto space-y-6 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
           {effectiveTab === "transactions" && (
-            <Transactions persona={persona} />
+            <Transactions persona={persona} bank={selectedBank} />
           )}
-          {effectiveTab === "queue" && <UnresolvedQueue />}
+          {effectiveTab === "queue" && (
+            <UnresolvedQueue key={selectedBank} bank={selectedBank} />
+          )}
           {effectiveTab === "onboarding" && <OnboardingTab />}
-          {effectiveTab === "rules" && <RulesTab />}
-          {effectiveTab === "terminals" && <TerminalsTab />}
-          {effectiveTab === "settlement" && <SettlementTab />}
-          {effectiveTab === "vas" && <VasTab />}
-          {effectiveTab === "audit" && <AuditLogTab />}
+          {effectiveTab === "rules" && <RulesTab key={selectedBank} bank={selectedBank} />}
+          {effectiveTab === "terminals" && (
+            <TerminalsTab key={selectedBank} bank={selectedBank} />
+          )}
+          {effectiveTab === "settlement" && (
+            <SettlementTab key={selectedBank} bank={selectedBank} />
+          )}
+          {effectiveTab === "vas" && <VasTab bank={selectedBank} />}
+          {effectiveTab === "audit" && <AuditLogTab bank={selectedBank} />}
         </main>
       </div>
 

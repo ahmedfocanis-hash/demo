@@ -11,7 +11,7 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
-import { batches, type BatchRow } from "./data";
+import { batches, filterByBank, type AcquirerBank, type BatchRow } from "./data";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import { Badge, ButtonGhost, PanelTitle } from "./ui";
 
@@ -29,8 +29,8 @@ const transportTone: Record<BatchRow["transport"], "slate" | "cyan"> = {
   "API Push": "cyan",
 };
 
-export default function SettlementTab() {
-  const [rows, setRows] = useState<BatchRow[]>(batches);
+export default function SettlementTab({ bank }: { bank: AcquirerBank }) {
+  const [rows, setRows] = useState<BatchRow[]>(() => filterByBank(batches, bank));
   const [revisions, setRevisions] = useState<Record<string, number>>({});
   const [purgeTarget, setPurgeTarget] = useState<BatchRow | null>(null);
 

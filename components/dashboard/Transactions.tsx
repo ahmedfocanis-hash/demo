@@ -13,7 +13,7 @@ import {
   Shield,
   X,
 } from "lucide-react";
-import { hops, txRows, type Persona, type TxRow } from "./data";
+import { hops, txRows, filterByBank, type AcquirerBank, type Persona, type TxRow } from "./data";
 import { Badge, Drawer, FieldLabel, Modal, PanelTitle, inputCls, selectCls } from "./ui";
 
 /* ----------------------------- Metric cards ------------------------------- */
@@ -49,15 +49,8 @@ const metricDefs = [
   },
 ] as const;
 
-const personaMetrics: Record<Persona, [string, string, string, string]> = {
-  acquirer: ["1.84B", "14,290", "96.4", "1,120"],
-  psp: ["482.5M", "3,840", "94.8", "340"],
-  merchant: ["14.85M", "112", "98.2", "4"],
-};
-
 const personaBanner: Record<Persona, string> = {
   acquirer: "Acquirer Estate View · National Bank Operations",
-  psp: "Institution Portfolio View · Partner: Al-Taif Digital Payments",
   merchant:
     "Merchant HQ Portal · Baghdad Central Supermarket (MID-772901-IRQ)",
 };
@@ -201,7 +194,7 @@ function Field({ n, d }: { n: string; d: string }) {
 
 /* ---------------------------- Main component ------------------------------ */
 
-export default function Transactions({ persona }: { persona: Persona }) {
+export default function Transactions({ persona, bank }: { persona: Persona; bank: AcquirerBank }) {
   const [selected, setSelected] = useState<TxRow | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [exportToast, setExportToast] = useState<string | null>(null);
@@ -216,17 +209,27 @@ export default function Transactions({ persona }: { persona: Persona }) {
     };
   }, [exportToast]);
 
-  const values = personaMetrics[persona];
+  const rows = filterByBank(txRows, bank);
+  const volumeIqd = rows.reduce(
+    (sum, tx) => sum + Number(tx.amount.replace(/,/g, "")),
+    0
+  );
+  const approvalRate = rows.length
+    ? Math.round(
+        (rows.filter((tx) => tx.response === "00 Approved").length / rows.length) *
+          1000
+      ) / 10
+    : 0;
+  const activeTerminals = new Set(
+    rows.map((tx) => (tx.pan ? tx.pan : tx.corrId))
+  ).size;
+  const values: [string, string, string, string] = [
+    volumeIqd.toLocaleString("en-US"),
+    rows.length.toLocaleString("en-US"),
+    approvalRate.toFixed(1),
+    activeTerminals.toLocaleString("en-US"),
+  ];
   const metricCards = metricDefs.map((m, i) => ({ ...m, value: values[i] }));
-
-  const rows =
-    persona === "acquirer"
-      ? txRows
-      : persona === "psp"
-        ? txRows.slice(0, 12)
-        : txRows.filter((tx) =>
-            tx.merchant.includes("Baghdad Central Supermarket"),
-          );
 
   return (
     <div className="space-y-5">

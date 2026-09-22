@@ -93,8 +93,7 @@ export const personaTabs: Record<Persona, TabId[]> = {
     "vas",
     "audit",
   ],
-  psp: ["transactions", "onboarding", "terminals", "settlement"],
-  merchant: ["transactions", "terminals", "settlement", "vas"],
+  merchant: ["transactions", "queue", "settlement"],
 };
 
 export default function Sidebar({

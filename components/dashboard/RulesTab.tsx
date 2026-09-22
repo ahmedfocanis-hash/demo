@@ -29,6 +29,7 @@ import {
 import {
   destinationOptionsFor,
   destinationHosts,
+  filterByBank,
   routingRules,
   sourceChannels,
   sourceInstitutions,
@@ -37,6 +38,7 @@ import {
   dccProviders,
 } from "./data";
 import type {
+  AcquirerBank,
   DccProvider,
   DriftMode,
   IntegrationProtocolSpec,
@@ -519,8 +521,8 @@ function Toast({ message }: { message: string | null }) {
   );
 }
 
-export default function RulesTab() {
-  const [rules, setRules] = useState<RoutingRule[]>(routingRules);
+export default function RulesTab({ bank }: { bank: AcquirerBank }) {
+  const [rules, setRules] = useState<RoutingRule[]>(() => filterByBank(routingRules, bank));
 
   const [category, setCategory] = useState<RuleCategory>("Transaction Route");
   const [txType, setTxType] = useState<TransactionType>("0200 - Sale / Purchase");
@@ -599,6 +601,7 @@ export default function RulesTab() {
       id: nextRuleId(rules.map((r) => r.id)),
       name: `${institution} / ${channel} / ${selectedDestination.label}`,
       category,
+      bank,
       sourceInstitution: institution,
       sourceChannel: channel,
       transactionType: category === "Transaction Route" ? txType : undefined,

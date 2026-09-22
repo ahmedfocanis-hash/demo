@@ -19,23 +19,12 @@ describe("Sidebar", () => {
     }
   });
 
-  it("psp sees only a subset of tabs", () => {
-    render(<Sidebar {...baseProps} persona="psp" />);
-    // present
-    for (const id of personaTabs.psp) {
+  it("merchant sees only a subset of tabs", () => {
+    render(<Sidebar {...baseProps} persona="merchant" />);
+    for (const id of personaTabs.merchant) {
       const label = tabs.find((t) => t.id === id)!.label;
       expect(screen.getByRole("button", { name: new RegExp(label, "i") })).toBeInTheDocument();
     }
-    // absent
-    const absentIds = tabs.map((t) => t.id).filter((id) => !personaTabs.psp.includes(id));
-    for (const id of absentIds) {
-      const label = tabs.find((t) => t.id === id)!.label;
-      expect(screen.queryByRole("button", { name: new RegExp(label, "i") })).toBeNull();
-    }
-  });
-
-  it("merchant sees only a subset of tabs", () => {
-    render(<Sidebar {...baseProps} persona="merchant" />);
     const absentIds = tabs.map((t) => t.id).filter((id) => !personaTabs.merchant.includes(id));
     for (const id of absentIds) {
       const label = tabs.find((t) => t.id === id)!.label;

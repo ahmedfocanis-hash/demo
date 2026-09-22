@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { RefreshCw, Send, Settings2 } from "lucide-react";
-import { terminals, type TerminalRow } from "./data";
+import { filterByBank, terminals, type AcquirerBank, type TerminalRow } from "./data";
 import { Badge, ButtonGhost, PanelTitle, Toggle } from "./ui";
 
 type UpdateState = Record<string, "Idle" | "Updating..." | "Updated">;
@@ -18,8 +18,8 @@ const modelBadge: Record<TerminalRow["model"], "slate" | "cyan" | "violet"> = {
   "NEXGO N86": "violet",
 };
 
-export default function TerminalsTab() {
-  const [rows, setRows] = useState<TerminalRow[]>(terminals);
+export default function TerminalsTab({ bank }: { bank: AcquirerBank }) {
+  const [rows, setRows] = useState<TerminalRow[]>(() => filterByBank(terminals, bank));
   const [updates, setUpdates] = useState<UpdateState>({});
   const [autoPush, setAutoPush] = useState(true);
 
