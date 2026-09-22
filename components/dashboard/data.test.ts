@@ -63,7 +63,7 @@ describe("stuckRows", () => {
     for (const r of stuckRows) {
       expect(validStatuses).toContain(r.status);
       expect(r.tone).toMatch(/^(green|red|amber|blue)$/);
-      expect(r.id).toMatch(/^STK-\d{2}$/);
+      expect(r.id).toMatch(/^STK-[A-Z]{3}-\d{2}$/);
       expect(seen.has(r.id)).toBe(false);
       seen.add(r.id);
     }

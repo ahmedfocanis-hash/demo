@@ -16,6 +16,7 @@ const modelBadge: Record<TerminalRow["model"], "slate" | "cyan" | "violet"> = {
   "PAX A920": "slate",
   "SUNMI V2s": "cyan",
   "NEXGO N86": "violet",
+  "Verifone V240m": "slate",
 };
 
 export default function TerminalsTab({ bank }: { bank: AcquirerBank }) {
