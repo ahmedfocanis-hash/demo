@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Banknote,
   Braces,
+  CalendarRange,
   CircleDot,
   CreditCard,
+  Download,
+  Loader2,
   Radio,
   Shield,
+  X,
 } from "lucide-react";
 import { hops, txRows, type Persona, type TxRow } from "./data";
-import { Badge, Drawer, PanelTitle } from "./ui";
+import { Badge, Drawer, FieldLabel, Modal, PanelTitle, inputCls, selectCls } from "./ui";
 
 /* ----------------------------- Metric cards ------------------------------- */
 
@@ -199,6 +203,18 @@ function Field({ n, d }: { n: string; d: string }) {
 
 export default function Transactions({ persona }: { persona: Persona }) {
   const [selected, setSelected] = useState<TxRow | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportToast, setExportToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!exportToast) return;
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setExportToast(null), 4000);
+    return () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    };
+  }, [exportToast]);
 
   const values = personaMetrics[persona];
   const metricCards = metricDefs.map((m, i) => ({ ...m, value: values[i] }));
@@ -257,6 +273,13 @@ export default function Transactions({ persona }: { persona: Persona }) {
                 Streaming
               </Badge>
               <Badge tone="slate">14,290 today</Badge>
+              <button
+                onClick={() => setExportOpen(true)}
+                className="rounded-[12px] border border-sand-wash px-3 py-1.5 text-xs font-medium text-ink-roast hover:bg-sand-wash/40 transition-colors flex items-center"
+              >
+                <Download className="h-3.5 w-3.5 mr-1.5" />
+                Bulk Export
+              </button>
             </div>
           }
         />
@@ -369,7 +392,241 @@ export default function Transactions({ persona }: { persona: Persona }) {
           </div>
         )}
       </Drawer>
+
+      <BulkExportModal
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        onQueued={(jobId) =>
+          setExportToast(
+            `✓ Export Job #${jobId} queued: 14,290 records compiled as CSV. (Demo mode: generation simulated)`
+          )
+        }
+      />
+
+      {exportToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed right-4 top-4 z-[70] flex max-w-md items-start gap-3 rounded-[12px] border border-signal-orange/25 bg-paper-white px-4 py-3 shadow-[var(--shadow-floating)] animate-modal-pop"
+        >
+          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-green/15 text-emerald-300">
+            <span className="text-[11px] font-semibold">✓</span>
+          </span>
+          <p className="flex-1 text-xs font-medium leading-relaxed text-ink-roast">
+            {exportToast}
+          </p>
+          <button
+            onClick={() => setExportToast(null)}
+            aria-label="Dismiss export notification"
+            className="shrink-0 rounded-md p-1 text-ash-grey transition hover:bg-sand-wash/60 hover:text-ink-roast"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
     </div>
+  );
+}
+
+/* ------------------------- Bulk export (simulated) ------------------------ */
+
+type ExportFormat = "CSV Spreadsheet" | "JSON Ledger" | "ISO 8583 Binary Trace (.dat)";
+
+const datePresetDefs = [
+  { label: "Today", from: "2026-09-22", to: "2026-09-22" },
+  { label: "Last 7 Days", from: "2026-09-16", to: "2026-09-22" },
+  { label: "Month to Date", from: "2026-09-01", to: "2026-09-22" },
+] as const;
+
+function BulkExportModal({
+  open,
+  onClose,
+  onQueued,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onQueued: (jobId: string) => void;
+}) {
+  const [from, setFrom] = useState("2026-09-01");
+  const [to, setTo] = useState("2026-09-22");
+  const [channel, setChannel] = useState("All Channels");
+  const [status, setStatus] = useState("All Statuses");
+  const [format, setFormat] = useState<ExportFormat>("CSV Spreadsheet");
+  const [compiling, setCompiling] = useState(false);
+
+  const generate = () => {
+    if (compiling) return;
+    setCompiling(true);
+    setTimeout(() => {
+      setCompiling(false);
+      onClose();
+      onQueued(`EXP-2026-09`);
+    }, 1200);
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Export Transaction Ledger"
+      subtitle="Configure temporal window, channel constraints, and target format for bulk reporting."
+      maxWidth="max-w-xl"
+      footer={
+        <div className="flex items-center justify-between gap-3">
+          <p className="hidden text-[11px] leading-relaxed text-ash-grey sm:block">
+            No payloads leave this sandbox — export jobs are simulated for demo purposes.
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onClose}
+              disabled={compiling}
+              className="rounded-[12px] border border-sand-wash px-4 py-2 text-sm font-medium text-ink-roast transition-colors hover:bg-sand-wash/40 disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={generate}
+              disabled={compiling}
+              className="inline-flex items-center gap-2 rounded-[12px] bg-signal-orange px-4 py-2 text-sm font-medium text-white transition-all hover:bg-brand-orange-tint active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {compiling ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Compiling Ledger Archive...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  Generate Export
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-5">
+        {/* Estimated volume banner */}
+        <div className="flex items-start gap-3 rounded-[12px] border border-signal-orange/20 bg-signal-orange/5 px-4 py-3">
+          <CalendarRange className="mt-0.5 h-4 w-4 shrink-0 text-signal-orange" />
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-ink-roast">
+              Estimated Volume: ~14,290 transactions (~1.84B IQD)
+            </p>
+            <p className="mt-0.5 text-[11px] leading-relaxed text-ash-grey">
+              Window {from} → {to} · {channel} · {status} · {format}
+            </p>
+          </div>
+        </div>
+
+        {/* Date range */}
+        <div>
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            <span className="mr-1 text-[11px] font-medium uppercase tracking-[0.03em] text-ash-grey">
+              Quick Range
+            </span>
+            {datePresetDefs.map((preset) => {
+              const active = from === preset.from && to === preset.to;
+              return (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => {
+                    setFrom(preset.from);
+                    setTo(preset.to);
+                  }}
+                  className={`rounded-[84px] border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    active
+                      ? "border-signal-orange/50 bg-signal-orange/10 text-signal-orange"
+                      : "border-sand-wash bg-paper-white text-ink-roast hover:bg-sand-wash/40"
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <FieldLabel>Date From</FieldLabel>
+              <input
+                type="date"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <FieldLabel>Date To</FieldLabel>
+              <input
+                type="date"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                className={inputCls}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div>
+            <FieldLabel>Channel Filter</FieldLabel>
+            <select
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+              className={selectCls}
+            >
+              <option>All Channels</option>
+              <option>Physical POS</option>
+              <option>SoftPOS SDK</option>
+              <option>Dynamic QR</option>
+            </select>
+          </div>
+          <div>
+            <FieldLabel>Status Filter</FieldLabel>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className={selectCls}
+            >
+              <option>All Statuses</option>
+              <option>00 Approved Only</option>
+              <option>Declined / Non-Zero Only</option>
+              <option>91 Timeout &amp; Exception</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Format selector */}
+        <div>
+          <FieldLabel>Export Format</FieldLabel>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {(["CSV Spreadsheet", "JSON Ledger", "ISO 8583 Binary Trace (.dat)"] as const).map(
+              (option) => {
+                const active = format === option;
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setFormat(option)}
+                    className={`rounded-[12px] border px-3 py-2 text-left text-[11px] font-medium leading-snug transition-colors ${
+                      active
+                        ? "border-signal-orange/50 bg-signal-orange/10 text-signal-orange"
+                        : "border-sand-wash bg-paper-white text-ink-roast hover:bg-sand-wash/40"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                );
+              }
+            )}
+          </div>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
