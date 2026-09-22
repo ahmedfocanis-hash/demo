@@ -248,7 +248,10 @@ export const hops: Hop[] = [
 export type StuckStatus =
   | "HOST_TIMEOUT"
   | "UNKNOWN_OUTCOME"
-  | "CONFIG_DRIFT_BLOCKED";
+  | "CONFIG_DRIFT_BLOCKED"
+  | "REVERSAL_FAILED"
+  | "LATE_RESPONSE"
+  | "DUKPT_KEY_DESYNC";
 
 export interface StuckRow {
   id: string;
@@ -261,38 +264,142 @@ export interface StuckRow {
   merchant: string;
 }
 
-export const stuckRows: StuckRow[] = [
-  {
-    id: "stk-01",
-    amount: "350,000",
-    type: "Pre-Auth Completion",
-    status: "HOST_TIMEOUT",
-    aging: "18m",
-    tone: "red",
-    time: "14:13:09",
-    merchant: "Mosul Car Rentals",
-  },
-  {
-    id: "stk-02",
-    amount: "120,000",
-    type: "SoftPOS Purchase",
-    status: "UNKNOWN_OUTCOME",
-    aging: "6m",
-    tone: "amber",
-    time: "14:25:44",
-    merchant: "Baghdad Al-Ghazal Pharmacy",
-  },
-  {
-    id: "stk-03",
-    amount: "85,000",
-    type: "POS Sale",
-    status: "CONFIG_DRIFT_BLOCKED",
-    aging: "2m",
-    tone: "blue",
-    time: "14:29:11",
-    merchant: "Karbala Flower Boutique",
-  },
+/* Deterministic 55-record queue — Iraqi & regional retail estate. */
+const SQ_MERCHANTS = [
+  "Baghdad Supermarket",
+  "Erbil Grand Mall",
+  "Basra Fuel Services",
+  "Mosul Car Rentals",
+  "Baghdad Al-Ghazal Pharmacy",
+  "Karbala Flower Boutique",
+  "Sulaymaniyah Tech Hub",
+  "Najaf Hospitality Center",
+  "Babylon Food Express",
+  "Karkh Medical Supplies",
+  "Mansour Fashion Galleria",
+  "Erbil Zheen Hotel",
+  "Kurdistan Galleria",
+  "Kirkuk Fuel Station",
+  "Baghdad Central Supermarket",
+  "Anbar Trade Mart",
+  "Diyala Health Clinic",
+  "Wasit Electronics",
+] as const;
+
+const SQ_TYPES = [
+  { t: "POS Sale (0200)", a: "485,000" },
+  { t: "SoftPOS Purchase", a: "128,500" },
+  { t: "Pre-Auth Completion (0200)", a: "1,240,000" },
+  { t: "QR Dynamic Checkout", a: "64,800" },
+  { t: "Tasdeed Bill Payment", a: "320,000" },
+  { t: "Refund / Return (0200)", a: "215,750" },
+  { t: "Incremental Auth", a: "875,000" },
+] as const;
+
+const SQ_STATUSES: { s: StuckStatus; tone: "red" | "amber" | "blue" }[] = [
+  { s: "HOST_TIMEOUT", tone: "red" },
+  { s: "UNKNOWN_OUTCOME", tone: "amber" },
+  { s: "CONFIG_DRIFT_BLOCKED", tone: "blue" },
+  { s: "REVERSAL_FAILED", tone: "red" },
+  { s: "LATE_RESPONSE", tone: "amber" },
+  { s: "DUKPT_KEY_DESYNC", tone: "red" },
 ];
+
+const SQ_AGINGS = ["1m", "3m", "8m", "14m", "18m", "22m", "37m", "54m", "72m", "96m", "142m"] as const;
+
+/* Anchor clock 14:32:00 minus aging minutes. */
+const SQ_ANCHOR = 14 * 3600 + 32 * 60;
+function sqTimeOffset(min: number): string {
+  const total = SQ_ANCHOR - min * 60;
+  const h = Math.floor(total / 3600) % 24;
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+/* Fixed seeds for a stable, realistic mix. Every ID is STK-01 through STK-55. */
+const SQ_SEEDS: {
+  m: number;
+  t: number;
+  s: number;
+  ag: number;
+  amt?: string;
+}[] = [
+  { m: 3, t: 2, s: 0, ag: 3, amt: "350,000" },   // stk-01
+  { m: 4, t: 1, s: 1, ag: 1, amt: "120,000" },   // stk-02
+  { m: 5, t: 0, s: 2, ag: 0, amt: "85,000" },    // stk-03
+  { m: 0, t: 0, s: 0, ag: 2 },
+  { m: 1, t: 3, s: 3, ag: 4 },
+  { m: 2, t: 4, s: 4, ag: 6, amt: "8,500,000" },
+  { m: 6, t: 0, s: 1, ag: 3 },
+  { m: 7, t: 5, s: 5, ag: 7, amt: "45.00 USD" },
+  { m: 8, t: 1, s: 0, ag: 1 },
+  { m: 9, t: 2, s: 3, ag: 8 },
+  { m: 10, t: 0, s: 4, ag: 2 },
+  { m: 11, t: 3, s: 1, ag: 5, amt: "12,500" },
+  { m: 12, t: 4, s: 2, ag: 9 },
+  { m: 13, t: 6, s: 5, ag: 4 },
+  { m: 14, t: 0, s: 0, ag: 6, amt: "5,820,000" },
+  { m: 15, t: 1, s: 3, ag: 10 },
+  { m: 16, t: 2, s: 1, ag: 2 },
+  { m: 17, t: 3, s: 4, ag: 7 },
+  { m: 0, t: 4, s: 0, ag: 5 },
+  { m: 1, t: 5, s: 5, ag: 3 },
+  { m: 2, t: 0, s: 2, ag: 8 },
+  { m: 3, t: 1, s: 3, ag: 4, amt: "76,500" },
+  { m: 4, t: 2, s: 1, ag: 9, amt: "45.00 USD" },
+  { m: 5, t: 3, s: 0, ag: 1 },
+  { m: 6, t: 4, s: 4, ag: 6 },
+  { m: 7, t: 6, s: 5, ag: 2 },
+  { m: 8, t: 0, s: 3, ag: 10, amt: "12,500" },
+  { m: 9, t: 1, s: 1, ag: 4 },
+  { m: 10, t: 2, s: 0, ag: 7 },
+  { m: 11, t: 3, s: 2, ag: 3 },
+  { m: 12, t: 4, s: 5, ag: 8 },
+  { m: 13, t: 5, s: 3, ag: 5 },
+  { m: 14, t: 0, s: 1, ag: 9, amt: "8,500,000" },
+  { m: 15, t: 1, s: 4, ag: 2 },
+  { m: 16, t: 2, s: 0, ag: 6 },
+  { m: 17, t: 3, s: 3, ag: 4, amt: "45.00 USD" },
+  { m: 0, t: 4, s: 2, ag: 7 },
+  { m: 1, t: 6, s: 1, ag: 3 },
+  { m: 2, t: 0, s: 5, ag: 10 },
+  { m: 3, t: 1, s: 0, ag: 5, amt: "12,500" },
+  { m: 4, t: 2, s: 3, ag: 8 },
+  { m: 5, t: 3, s: 4, ag: 1 },
+  { m: 6, t: 4, s: 2, ag: 6, amt: "45.00 USD" },
+  { m: 7, t: 5, s: 5, ag: 9 },
+  { m: 8, t: 0, s: 1, ag: 2 },
+  { m: 9, t: 6, s: 0, ag: 7, amt: "8,500,000" },
+  { m: 10, t: 1, s: 3, ag: 4 },
+  { m: 11, t: 2, s: 4, ag: 6 },
+  { m: 12, t: 3, s: 5, ag: 3 },
+  { m: 13, t: 4, s: 0, ag: 8 },
+  { m: 14, t: 5, s: 2, ag: 5 },
+  { m: 15, t: 0, s: 1, ag: 2 },
+  { m: 16, t: 6, s: 3, ag: 7 },
+  { m: 17, t: 1, s: 4, ag: 9 },
+  { m: 0, t: 2, s: 5, ag: 10 },
+  { m: 1, t: 3, s: 0, ag: 4, amt: "5,820,000" },
+];
+
+export const stuckRows: StuckRow[] = SQ_SEEDS.map((seed, i) => {
+  const status = SQ_STATUSES[seed.s];
+  const type = SQ_TYPES[seed.t];
+  const agingLabel = SQ_AGINGS[seed.ag];
+  const agingMinutes = Number(agingLabel.replace(/[^0-9]/g, ""));
+  return {
+    id: `STK-${String(i + 1).padStart(2, "0")}`.toUpperCase(),
+    merchant: SQ_MERCHANTS[seed.m],
+    type: type.t,
+    amount: seed.amt ?? type.a,
+    status: status.s,
+    tone: status.tone,
+    aging: agingLabel,
+    time: sqTimeOffset(agingMinutes),
+  };
+});
 
 /* --------------------------- Terminal fleet ------------------------------- */
 

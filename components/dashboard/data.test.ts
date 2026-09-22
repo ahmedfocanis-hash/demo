@@ -46,15 +46,26 @@ describe("txRows", () => {
 });
 
 describe("stuckRows", () => {
-  it("every stuck row has a valid status and tone", () => {
+  it("contains at least 50 records", () => {
+    expect(stuckRows.length).toBeGreaterThanOrEqual(50);
+  });
+
+  it("every stuck row has a valid status, tone, and unique id", () => {
     const validStatuses: StuckRowStatus[] = [
       "HOST_TIMEOUT",
       "UNKNOWN_OUTCOME",
       "CONFIG_DRIFT_BLOCKED",
+      "REVERSAL_FAILED",
+      "LATE_RESPONSE",
+      "DUKPT_KEY_DESYNC",
     ];
+    const seen = new Set<string>();
     for (const r of stuckRows) {
       expect(validStatuses).toContain(r.status);
       expect(r.tone).toMatch(/^(green|red|amber|blue)$/);
+      expect(r.id).toMatch(/^STK-\d{2}$/);
+      expect(seen.has(r.id)).toBe(false);
+      seen.add(r.id);
     }
   });
 });
