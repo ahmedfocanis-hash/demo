@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  ACQUIRER_BANK_MEMBERS,
+  bankToCode,
   stuckRows,
   terminals,
   txRows,
+  type TerminalRow,
   type TxRow,
 } from "./data";
+import { modelBadge } from "./TerminalsTab";
 import { personaTabs, tabs, type TabId } from "./Sidebar";
 
 const ALL_TAB_IDS = tabs.map((t) => t.id) as TabId[];
@@ -46,6 +50,8 @@ describe("txRows", () => {
 });
 
 describe("stuckRows", () => {
+  const MEMBER_BANK_CODES = ACQUIRER_BANK_MEMBERS.map((b) => bankToCode(b));
+
   it("contains at least 50 records", () => {
     expect(stuckRows.length).toBeGreaterThanOrEqual(50);
   });
@@ -68,13 +74,111 @@ describe("stuckRows", () => {
       seen.add(r.id);
     }
   });
+
+  it("only references valid member acquirer bank codes in generated IDs", () => {
+    const codes = new Set<string>();
+    for (const r of stuckRows) {
+      const m = /^STK-([A-Z]{3})-\d{2}$/.exec(r.id);
+      expect(m, `unexpected stuck ID format: ${r.id}`).not.toBeNull();
+      codes.add(m![1]);
+    }
+    expect(new Set([...codes].sort())).toEqual(
+      new Set([...MEMBER_BANK_CODES].sort()),
+    );
+  });
+
+  it("each bank code's sequence increments contiguously 01..11", () => {
+    const byCode = new Map<string, number[]>();
+    for (const r of stuckRows) {
+      const m = /^STK-([A-Z]{3})-(\d{2})$/.exec(r.id);
+      expect(m, `unexpected stuck ID format: ${r.id}`).not.toBeNull();
+      const [, code, suffix] = m!;
+      if (!byCode.has(code)) byCode.set(code, []);
+      byCode.get(code)!.push(Number(suffix));
+    }
+    expect([...byCode.keys()].sort()).toEqual([...MEMBER_BANK_CODES].sort());
+    for (const [code, suffixes] of byCode) {
+      const expected = suffixes
+        .map((_, i) => String(i + 1).padStart(2, "0"))
+        .sort((a, b) => a.localeCompare(b));
+      const actual = suffixes
+        .map((s) => String(s).padStart(2, "0"))
+        .sort((a, b) => a.localeCompare(b));
+      expect(actual, `non-contiguous sequence for bank code ${code}`).toEqual(expected);
+    }
+  });
 });
 
 describe("terminals", () => {
+  const MODELS = [
+    "PAX A920",
+    "SUNMI V2s",
+    "NEXGO N86",
+    "Verifone V240m",
+  ] as const satisfies readonly TerminalRow["model"][];
+
+  // Compile-time exhaustiveness check: if a model is added to TerminalRow
+  // but not to MODELS, the Record below fails to typecheck.
+  const _modeExhaustiveness: Record<TerminalRow["model"], true> = MODELS.reduce(
+    (acc, m) => ({ ...acc, [m]: true }),
+    {} as Record<TerminalRow["model"], true>,
+  );
+  void _modeExhaustiveness;
+
   it("every terminal has a required identifier", () => {
     for (const t of terminals) {
       expect(t.tid).toMatch(/^TID-/);
     }
+  });
+
+  it("every model in TerminalRow['model'] is covered by at least one terminal", () => {
+    const seen = new Set(terminals.map((t) => t.model));
+    for (const model of MODELS) {
+      expect(seen.has(model), `no terminal uses model "${model}"`).toBe(true);
+    }
+    for (const t of terminals) {
+      expect(MODELS, `unknown model "${t.model}"`).toContain(t.model);
+    }
+  });
+});
+
+type BadgeTone = "slate" | "cyan" | "violet";
+
+describe("modelBadge contract", () => {
+  const MODELS = [
+    "PAX A920",
+    "SUNMI V2s",
+    "NEXGO N86",
+    "Verifone V240m",
+  ] as const satisfies readonly TerminalRow["model"][];
+
+  // Compile-time exhaustiveness check: if a model is added to TerminalRow
+  // but not to MODELS, the Record below fails to typecheck.
+  const _modeExhaustiveness: Record<TerminalRow["model"], true> = MODELS.reduce(
+    (acc, m) => ({ ...acc, [m]: true }),
+    {} as Record<TerminalRow["model"], true>,
+  );
+  void _modeExhaustiveness;
+
+  const VALID_TONES: readonly BadgeTone[] = ["slate", "cyan", "violet"] as const;
+
+  it("every TerminalRow['model'] has a defined modelBadge color", () => {
+    for (const model of MODELS) {
+      const tone = modelBadge[model];
+      expect(tone, `missing modelBadge entry for "${model}"`).toBeDefined();
+      expect(VALID_TONES, `invalid tone "${tone}" for "${model}"`).toContain(tone);
+    }
+  });
+
+  it("modelBadge has no unknown keys beyond TerminalRow['model']", () => {
+    const declaredKeys = Object.keys(modelBadge);
+    for (const key of declaredKeys) {
+      expect(
+        MODELS,
+        `unknown modelBadge key "${key}"`,
+      ).toContain(key as TerminalRow["model"]);
+    }
+    expect(declaredKeys).toHaveLength(MODELS.length);
   });
 });
 

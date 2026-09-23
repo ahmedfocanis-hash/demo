@@ -546,6 +546,28 @@ function sqTimeOffset(min: number): string {
   return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
+const BANK_CODE: Record<MemberAcquirerBank, string> = {
+  QiCard: "QIC",
+  "Al Qaseh": "QSH",
+  Tabadul: "TBD",
+  Nass: "NSS",
+  Amwal: "AMW",
+};
+
+/**
+ * Resolves the short three-letter bank code used in stuck-row IDs.
+ * Throws instead of guessing if a member bank is missing from the map —
+ * keeps the STK-<CODE>-<NN> format honest rather than silently emitting
+ * truncated bank names.
+ */
+export function bankToCode(bank: MemberAcquirerBank): string {
+  const code = BANK_CODE[bank];
+  if (!code) {
+    throw new Error(`No bank code registered for member acquirer "${bank}"`);
+  }
+  return code;
+}
+
 export const stuckRows: StuckRow[] = Array.from({ length: 55 }, (_, i) => {
   const bank = ACQUIRER_BANK_MEMBERS[i % ACQUIRER_BANK_MEMBERS.length];
   const merchantPool = SQ_BANK_MERCHANTS[bank];
@@ -554,8 +576,7 @@ export const stuckRows: StuckRow[] = Array.from({ length: 55 }, (_, i) => {
   const type = SQ_TYPES[i % SQ_TYPES.length];
   const agingLabel = SQ_AGINGS[i % SQ_AGINGS.length];
   const agingMinutes = Number(agingLabel.replace(/[^0-9]/g, ""));
-  const bankCode =
-    ACQUIRER_BANKS.find((b) => b.id === bank)?.code ?? bank.substring(0, 3).toUpperCase();
+  const bankCode = bankToCode(bank);
 
   return {
     id: `STK-${bankCode}-${String(Math.floor(i / 5) + 1).padStart(2, "0")}`,

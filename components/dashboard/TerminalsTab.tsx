@@ -12,7 +12,7 @@ const driftTone: Record<TerminalRow["drift"], "green" | "red"> = {
   "Drift Detected": "red",
 };
 
-const modelBadge: Record<TerminalRow["model"], "slate" | "cyan" | "violet"> = {
+export const modelBadge: Record<TerminalRow["model"], "slate" | "cyan" | "violet"> = {
   "PAX A920": "slate",
   "SUNMI V2s": "cyan",
   "NEXGO N86": "violet",
